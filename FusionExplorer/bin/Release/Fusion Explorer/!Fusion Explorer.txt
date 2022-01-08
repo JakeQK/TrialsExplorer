@@ -1,7 +1,0 @@
-[Version 1.0]
-features:
-	* Import selected files		(Trials Evolution Xbox 360 Unsupported)
-	* Export selected files		(Trials Evolution Xbox 360 Unsupported)
-	* Export selected folder	(Trials Evolution Xbox 360 Unsupported)
-	* View file information		(All supported)
-	* View texture			(Trials Fusion Support only) (may work for blood dragon, haven't tested
