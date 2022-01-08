@@ -1,0 +1,11 @@
+Settings:
+	Game 	- The game setting is used when setting the compression flag when building the pak archive. || Trials Fusion (1) | Trials Evolution GE (8)
+	
+	**Select the game you want the pak to work for**
+	
+Compression Values:
+	Create 	- Select a pak archive and it will extract the compression flags for each file to a csv file
+	Load	- Load a csv so the program knows which files should be compressed
+	
+Build Archive
+	Select the folder you want to build as an archive
