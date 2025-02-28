@@ -119,10 +119,11 @@ namespace FusionExplorer
         {
             try
             {
-                string dir = FavouritesList[lbFavouritesList.SelectedIndex].Directory + "\\";
-                byte[] data = File.ReadAllBytes(dir + "objectgroup.grp");
+                string dir = FavouritesList[lbFavouritesList.SelectedIndex].Directory; /* + "\\"*/
+                Clipboard.SetText(dir);
+                /*byte[] data = File.ReadAllBytes(dir + "objectgroup.grp");
                 SelectedGRP = new GRP(data);
-                UpdateObjectsList();
+                UpdateObjectsList();*/
             }
             catch (Exception ex)
             {
@@ -268,10 +269,8 @@ namespace FusionExplorer
         }
 
 
-
         private void btnSetSettings_Click(object sender, EventArgs e)
         {
-            //GRP.Properties prop = SelectedGRP.Objects[lbObjectsList.SelectedIndex].Entry.Properties;
             try
             {
                 GRP.Properties prop = new GRP.Properties();
@@ -410,5 +409,25 @@ namespace FusionExplorer
                 nSecondaryB.Value = colorDialog1.Color.B;
             }
         }
+
+        private void cbFlag4_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (var idk in FavouritesList)
+            {
+                if (idk.GroupIndex == 5)
+                {
+                    sb.AppendLine(string.Format("{0} {1}", idk.Name, idk.Directory));
+                }
+            }
+
+            Clipboard.SetText(sb.ToString());
+        }
+
     }
 }

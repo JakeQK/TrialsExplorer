@@ -56,10 +56,10 @@
     <ApplicationIcon>aup8i-rmim2-001.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>3AEA5F45CB6A243A91D6181A748F47EEFFDD6DDC</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>9C999ADCB57B2D1ADF374737F8857B5BBF6F7A64</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>FusionExplorer_1_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>FusionExplorer_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -264,6 +264,15 @@
     <Reference Include="Ookii.Dialogs.WinForms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=66aa232afad40158, processorArchitecture=MSIL">
       <HintPath>..\packages\Ookii.Dialogs.WinForms.4.0.0\lib\net462\Ookii.Dialogs.WinForms.dll</HintPath>
     </Reference>
+    <Reference Include="Reloaded.Memory, Version=8.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Reloaded.Memory.8.0.1\lib\netstandard2.0\Reloaded.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="Reloaded.Memory.Sigscan, Version=3.1.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Reloaded.Memory.Sigscan.3.1.6\lib\netstandard2.0\Reloaded.Memory.Sigscan.dll</HintPath>
+    </Reference>
+    <Reference Include="Reloaded.Memory.Sigscan.Definitions, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Reloaded.Memory.Sigscan.Definitions.1.1.1\lib\netstandard2.0\Reloaded.Memory.Sigscan.Definitions.dll</HintPath>
+    </Reference>
     <Reference Include="SevenZip, Version=19.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\LZMA-SDK.19.0.0\lib\net20\SevenZip.dll</HintPath>
     </Reference>
@@ -462,15 +471,26 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ImageRipper.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ImageRipper.Designer.cs">
+      <DependentUpon>ImageRipper.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\FusionExplorer.Designer.cs">
       <DependentUpon>FusionExplorer.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Properties\FusionExplorer.fr.Designer.cs">
-      <DependentUpon>FusionExplorer.fr.resx</DependentUpon>
+    <Compile Include="Properties\FusionExplorer.ja-JP.Designer.cs">
+      <DependentUpon>FusionExplorer.ja-JP.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="src\Customization.cs">
       <SubType>Form</SubType>
@@ -483,6 +503,13 @@
     </Compile>
     <Compile Include="src\ObjectCollection.Designer.cs">
       <DependentUpon>ObjectCollection.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\PAK.cs" />
+    <Compile Include="src\PixelArtGenerator.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\PixelArtGenerator.Designer.cs">
+      <DependentUpon>PixelArtGenerator.cs</DependentUpon>
     </Compile>
     <Compile Include="src\utility\DirectBitmap.cs" />
     <Compile Include="src\FusionExplorer.cs">
@@ -520,15 +547,23 @@
     <Compile Include="src\TextureViewer.Designer.cs">
       <DependentUpon>TextureViewer.cs</DependentUpon>
     </Compile>
+    <Compile Include="src\utility\PixelArt.cs" />
     <Compile Include="src\utility\Texture.cs" />
     <Compile Include="src\utility\Utility.cs" />
-    <EmbeddedResource Include="Properties\FusionExplorer.fr.resx">
+    <EmbeddedResource Include="ImageRipper.resx">
+      <DependentUpon>ImageRipper.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\FusionExplorer.ja-JP.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>FusionExplorer.fr.Designer.cs</LastGenOutput>
+      <LastGenOutput>FusionExplorer.ja-JP.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\FusionExplorer.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>FusionExplorer.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="src\Customization.resx">
       <DependentUpon>Customization.cs</DependentUpon>
@@ -542,6 +577,9 @@
     <EmbeddedResource Include="src\ObjectCollection.resx">
       <DependentUpon>ObjectCollection.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="src\PixelArtGenerator.resx">
+      <DependentUpon>PixelArtGenerator.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="src\TrackTool.resx">
       <DependentUpon>TrackTool.cs</DependentUpon>
     </EmbeddedResource>
@@ -553,6 +591,7 @@
     </EmbeddedResource>
     <None Include="FusionExplorer.config" />
     <None Include="FusionExplorer_1_TemporaryKey.pfx" />
+    <None Include="FusionExplorer_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
@@ -570,6 +609,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="aup8i-rmim2-001.ico" />
+    <None Include="resources\CustomRider.dds" />
+    <None Include="resources\CustomRiderImage.bmp" />
+    <None Include="resources\Techboy_A_Pants.png.bmp" />
+    <None Include="resources\Techboy_A_Head.png.bmp" />
+    <None Include="resources\Techboy_A_Body.bmp" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
@@ -583,9 +627,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="resources\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />

@@ -27,7 +27,6 @@ namespace FusionExplorer {
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FusionExplorer));
-            System.ComponentModel.ComponentResourceManager res = new System.ComponentModel.ComponentResourceManager(typeof(Properties.FusionExplorer));
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
             this.btnOpenFile = new System.Windows.Forms.ToolStripMenuItem();
@@ -39,6 +38,8 @@ namespace FusionExplorer {
             this.btnOpenObjectCollection = new System.Windows.Forms.ToolStripMenuItem();
             this.btnEditorFavouritesTool = new System.Windows.Forms.ToolStripMenuItem();
             this.btnCustomization = new System.Windows.Forms.ToolStripMenuItem();
+            this.imageRipperToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.btnAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.tvDirectoryDisplay = new System.Windows.Forms.TreeView();
@@ -65,8 +66,7 @@ namespace FusionExplorer {
             this.btnAbout});
             resources.ApplyResources(this.toolStripDropDownButton1, "toolStripDropDownButton1");
             this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
-            //this.toolStripDropDownButton1.Text = Properties.FusionExplorer.DROP_DOWN_BUTTON_FILE;
-            this.toolStripDropDownButton1.Text = Properties.FusionExplorer.DROP_DOWN_BUTTON_FILE;
+            this.toolStripDropDownButton1.Text = global::FusionExplorer.Properties.FusionExplorer.DROP_DOWN_BUTTON_FILE;
             // 
             // btnOpenFile
             // 
@@ -96,7 +96,9 @@ namespace FusionExplorer {
             this.btnTrackTool,
             this.btnOpenObjectCollection,
             this.btnEditorFavouritesTool,
-            this.btnCustomization});
+            this.btnCustomization,
+            this.imageRipperToolStripMenuItem,
+            this.toolStripMenuItem1});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             resources.ApplyResources(this.toolsToolStripMenuItem, "toolsToolStripMenuItem");
             this.toolsToolStripMenuItem.Text = global::FusionExplorer.Properties.FusionExplorer.FILE_TOOLS;
@@ -136,11 +138,23 @@ namespace FusionExplorer {
             this.btnCustomization.Text = global::FusionExplorer.Properties.FusionExplorer.FILE_TOOLS_CUSTOMIZATION;
             this.btnCustomization.Click += new System.EventHandler(this.btnCustomization_Click);
             // 
+            // imageRipperToolStripMenuItem
+            // 
+            this.imageRipperToolStripMenuItem.Name = "imageRipperToolStripMenuItem";
+            resources.ApplyResources(this.imageRipperToolStripMenuItem, "imageRipperToolStripMenuItem");
+            this.imageRipperToolStripMenuItem.Click += new System.EventHandler(this.imageRipperToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            resources.ApplyResources(this.toolStripMenuItem1, "toolStripMenuItem1");
+            this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
+            // 
             // btnAbout
             // 
             this.btnAbout.Name = "btnAbout";
             resources.ApplyResources(this.btnAbout, "btnAbout");
-            this.btnAbout.Text = Properties.FusionExplorer.FILE_ABOUT;
+            this.btnAbout.Text = global::FusionExplorer.Properties.FusionExplorer.FILE_ABOUT;
             this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
             // 
             // toolStripStatusLabel1
@@ -195,6 +209,8 @@ namespace FusionExplorer {
         private System.Windows.Forms.ToolStripMenuItem btnEditorFavouritesTool;
         private System.Windows.Forms.ToolStripMenuItem btnAbout;
         private System.Windows.Forms.ToolStripMenuItem btnCustomization;
+        private System.Windows.Forms.ToolStripMenuItem imageRipperToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
     }
 }
 

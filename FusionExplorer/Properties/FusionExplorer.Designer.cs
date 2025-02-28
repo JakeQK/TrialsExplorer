@@ -19,7 +19,7 @@ namespace FusionExplorer.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class FusionExplorer {
@@ -97,7 +97,7 @@ namespace FusionExplorer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to English.
+        ///   Looks up a localized string similar to File.
         /// </summary>
         internal static string DROP_DOWN_BUTTON_FILE {
             get {
@@ -196,6 +196,15 @@ namespace FusionExplorer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Decoration Only.
+        /// </summary>
+        internal static string FE_DECORATION_ONLY {
+            get {
+                return ResourceManager.GetString("FE_DECORATION_ONLY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dont Reset Position.
         /// </summary>
         internal static string FE_DONT_RESET_POSITION {
@@ -228,6 +237,24 @@ namespace FusionExplorer.Properties {
         internal static string FE_FAVOURITES_LIST {
             get {
                 return ResourceManager.GetString("FE_FAVOURITES_LIST", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hit Response.
+        /// </summary>
+        internal static string FE_HIT_RESPONSE {
+            get {
+                return ResourceManager.GetString("FE_HIT_RESPONSE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Initial State.
+        /// </summary>
+        internal static string FE_INITIAL_STATE {
+            get {
+                return ResourceManager.GetString("FE_INITIAL_STATE", resourceCulture);
             }
         }
         
@@ -282,6 +309,15 @@ namespace FusionExplorer.Properties {
         internal static string FE_NO_CONTACAT_RESPONSE {
             get {
                 return ResourceManager.GetString("FE_NO_CONTACAT_RESPONSE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No Hit Response.
+        /// </summary>
+        internal static string FE_NO_HIT_RESPONSE {
+            get {
+                return ResourceManager.GetString("FE_NO_HIT_RESPONSE", resourceCulture);
             }
         }
         
@@ -592,7 +628,7 @@ namespace FusionExplorer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Import.
+        ///   Looks up a localized string similar to Replace.
         /// </summary>
         internal static string ITEM_CONTEXTMENU_IMPORT {
             get {
@@ -646,7 +682,7 @@ namespace FusionExplorer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Import.
+        ///   Looks up a localized string similar to Replace.
         /// </summary>
         internal static string TEXTURE_CONTEXTMENU_IMPORT {
             get {
@@ -655,7 +691,7 @@ namespace FusionExplorer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Import DDS.
+        ///   Looks up a localized string similar to Replace DDS.
         /// </summary>
         internal static string TEXTURE_CONTEXTMENU_IMPORT_DDS {
             get {

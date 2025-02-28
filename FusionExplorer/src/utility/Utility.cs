@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Configuration;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace FusionExplorer
 {
@@ -296,6 +297,15 @@ namespace FusionExplorer
         }
 
         public float x, y, z;
+
+        public byte[] ToByteArray()
+        {
+            byte[] output = new byte[12];
+            Buffer.BlockCopy(BitConverter.GetBytes(x).Reverse().ToArray(), 0, output, 0, 4);
+            Buffer.BlockCopy(BitConverter.GetBytes(y).Reverse().ToArray(), 0, output, 4, 4);
+            Buffer.BlockCopy(BitConverter.GetBytes(z).Reverse().ToArray(), 0, output, 8, 4);
+            return output;
+        }
     }
 
     public class Vector4
@@ -310,6 +320,16 @@ namespace FusionExplorer
         }
 
         public float w, x, y, z;
+
+        public byte[] ToByteArray()
+        {
+            byte[] output = new byte[16];
+            Buffer.BlockCopy(BitConverter.GetBytes(x).Reverse().ToArray(), 0, output, 0, 4);
+            Buffer.BlockCopy(BitConverter.GetBytes(y).Reverse().ToArray(), 0, output, 4, 4);
+            Buffer.BlockCopy(BitConverter.GetBytes(z).Reverse().ToArray(), 0, output, 8, 4);
+            Buffer.BlockCopy(BitConverter.GetBytes(w).Reverse().ToArray(), 0, output, 12, 4);
+            return output;
+        }
     }
 
     public class RGB
@@ -323,5 +343,14 @@ namespace FusionExplorer
         }
 
         public byte R, G, B;
+
+        public byte[] ToByteArray()
+        {
+            byte[] output = new byte[3];
+            Buffer.BlockCopy(BitConverter.GetBytes(this.R), 0, output, 0, 1);
+            Buffer.BlockCopy(BitConverter.GetBytes(this.G), 0, output, 1, 1);
+            Buffer.BlockCopy(BitConverter.GetBytes(this.B), 0, output, 2, 1);
+            return output;
+        }
     }
 }

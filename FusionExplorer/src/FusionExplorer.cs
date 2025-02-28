@@ -14,10 +14,11 @@ using System.Windows.Forms;
 using Ionic.Zlib;
 using Ookii.Dialogs.WinForms;
 using System.Globalization;
+using FusionExplorer.src;
 
 namespace FusionExplorer 
 {
-    public partial class FusionExplorer : System.Windows.Forms.Form; 
+    public partial class FusionExplorer : System.Windows.Forms.Form
     {
         private static string filename;
         private static string safe_filename;
@@ -50,18 +51,8 @@ namespace FusionExplorer
             item_contextmenu.MenuItems.Add(Properties.FusionExplorer.ITEM_CONTEXTMENU_HXD, new EventHandler(open_with_hxd));
 
             folder_contextmenu.MenuItems.Add(Properties.FusionExplorer.FOLDER_CONTEXTMENU_EXPORT, new EventHandler(export_folder));
-
-            string Culture = "fr";
-            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(Culture);
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo(Culture);
-            /*
-            var cultureInfo = CultureInfo.GetCultureInfo("fr");
-            Thread.CurrentThread.CurrentUICulture = cultureInfo;
-            Thread.CurrentThread.CurrentCulture = cultureInfo;
-            System.Globalization.CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
-             */
-            
-            
+            folder_contextmenu.MenuItems.Add("Add new file", new EventHandler(add_new_file));
+            folder_contextmenu.MenuItems.Add("Add new DDS", new EventHandler(add_new_dds));
         }
 
         private void btnOpenFile_Click(object sender, EventArgs e)
@@ -110,7 +101,7 @@ namespace FusionExplorer
                     {
                         ArchiveFile af = new ArchiveFile();
                         long file_entry_offset = br.BaseStream.Position;
-                        af.file_entry = new file_entry(br.ReadInt32(), br.ReadInt32(), br.ReadInt32(), br.ReadByte(), br.ReadInt32(), file_entry_offset);
+                        af.fileEntry = new FileEntry(br.ReadInt32(), br.ReadInt32(), br.ReadInt32(), br.ReadByte(), br.ReadInt32(), file_entry_offset);
                         archive_files.Add(af);
                     }
                 }
@@ -119,30 +110,38 @@ namespace FusionExplorer
 
         private void get_file_names()
         {
-            using (MemoryStream ms = new MemoryStream(pak_data))
+            try
             {
-                using (BinaryReader br = new BinaryReader(ms))
+
+                using (MemoryStream ms = new MemoryStream(pak_data))
                 {
-                    for(int i = file_count - 1; i != 0; i--)
+                    using (BinaryReader br = new BinaryReader(ms))
                     {
-                        if (archive_files[i].file_entry.Dummy == -576875544)
+                        for(int i = file_count - 1; i != 0; i--)
                         {
-                            archive_files[i].filename = "filenames";
-                            br.BaseStream.Seek(archive_files[i].file_entry.Data_Offset, SeekOrigin.Begin);
-                            br.ReadInt32();
-                            for (int j = 0; j < file_count; j++)
+                            if (archive_files[i].fileEntry.ID == -576875544)
                             {
-                                if (archive_files[j].file_entry.Dummy != -576875544)
-                                { 
-                                    Int16 strlen = br.ReadInt16();
-                                    string str = new string(br.ReadChars(strlen));
-                                    archive_files[j].filename = str;
+                                archive_files[i].filename = "filenames";
+                                br.BaseStream.Seek(archive_files[i].fileEntry.dataOffset, SeekOrigin.Begin);
+                                br.ReadInt32();
+                                for (int j = 0; j < file_count; j++)
+                                {
+                                    if (archive_files[j].fileEntry.ID != -576875544)
+                                    { 
+                                        Int16 strlen = br.ReadInt16();
+                                        string str = new string(br.ReadChars(strlen));
+                                        archive_files[j].filename = str;
+                                    }
                                 }
+                                break;
                             }
-                            break;
                         }
                     }
                 }
+            } 
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 
@@ -156,7 +155,7 @@ namespace FusionExplorer
             TreeNode current_node = root;
             for(int i = 0; i < archive_files.Count; i++)
             {
-                if (archive_files[i].file_entry.Dummy != -576875544)
+                if (archive_files[i].fileEntry.ID != -576875544)
                 {
                     string[] path_split = archive_files[i].filename.Split('/').ToArray();
                     current_node = root;
@@ -221,7 +220,7 @@ namespace FusionExplorer
                 using (BinaryReader br = new BinaryReader(ms))
                 {
                     // Goto data offset of selected file
-                    br.BaseStream.Seek(selected_archive_file.file_entry.Data_Offset, SeekOrigin.Begin);
+                    br.BaseStream.Seek(selected_archive_file.fileEntry.dataOffset, SeekOrigin.Begin);
 
                     // Obtain Path and Filename as seperate strings (ex: "/localization/", "evo1_chinese.xml")
                     string[] split_filename = filename_split(selected_archive_file.filename);
@@ -235,15 +234,15 @@ namespace FusionExplorer
                         // Create the file being exported and setup BinaryWriter to write the data
                         using (BinaryWriter bw = new BinaryWriter(File.Create(dir + split_filename[1])))
                         {
-                        switch (selected_archive_file.file_entry.Compression_Flag)
+                        switch (selected_archive_file.fileEntry.compressionFlag)
                         {
                             // Uncompressed
                             case 0:
-                                bw.Write(br.ReadBytes(selected_archive_file.file_entry.Decompressed_Size));
+                                bw.Write(br.ReadBytes(selected_archive_file.fileEntry.decompressedSize));
                                 break;
                             // zlib Compressed
                             case 1:
-                                bw.Write(ZlibStream.UncompressBuffer(br.ReadBytes(selected_archive_file.file_entry.Compressed_Size)));
+                                bw.Write(ZlibStream.UncompressBuffer(br.ReadBytes(selected_archive_file.fileEntry.compressedSize)));
                                 //bw.Write(br.ReadBytes(selected_archive_file.file_entry.Compressed_Size));
                                 break;
                             // Trials Evolution (Xbox 360) compressed
@@ -252,15 +251,17 @@ namespace FusionExplorer
                                 break;
                             // Trials Evolution: Gold Edition zlib compressed
                             case 8:
-                                bw.Write(ZlibStream.UncompressBuffer(br.ReadBytes(selected_archive_file.file_entry.Compressed_Size)));
+                                bw.Write(ZlibStream.UncompressBuffer(br.ReadBytes(selected_archive_file.fileEntry.compressedSize)));
                                 break;
                             // Unknown Case (Found in data_patch.pak)
                             case 16:
-                                bw.Write(DeflateStream.UncompressBuffer(br.ReadBytes(selected_archive_file.file_entry.Decompressed_Size)));
+                                //bw.Write(DeflateStream.UncompressBuffer(br.ReadBytes(selected_archive_file.file_entry.Decompressed_Size)));
+                                bw.Write(br.ReadBytes(selected_archive_file.fileEntry.compressedSize));
                                 break;
                             // Unknown Case (Found in data_patch.pak)
                             case 17:
-                                bw.Write(DeflateStream.UncompressBuffer(br.ReadBytes(selected_archive_file.file_entry.Decompressed_Size)));
+                                //bw.Write(DeflateStream.UncompressBuffer(br.ReadBytes(selected_archive_file.file_entry.Decompressed_Size)));
+                                bw.Write(br.ReadBytes(selected_archive_file.fileEntry.compressedSize));
                                 break;
                         }
                     }
@@ -298,7 +299,7 @@ namespace FusionExplorer
                                 using (BinaryReader br = new BinaryReader(ms))
                                 {
                                     // Goto data offset of selected file
-                                    br.BaseStream.Seek(af.file_entry.Data_Offset, SeekOrigin.Begin);
+                                    br.BaseStream.Seek(af.fileEntry.dataOffset, SeekOrigin.Begin);
 
                                     // Obtain Path and Filename as seperate strings (ex: "/localization/", "evo1_chinese.xml")
                                     string[] split_filename = filename_split(af.filename);
@@ -311,30 +312,30 @@ namespace FusionExplorer
                                     // Create the file being exported and setup BinaryWriter to write the data
                                     using (BinaryWriter bw = new BinaryWriter(File.Create(dir + split_filename[1])))
                                     {
-                                        switch (af.file_entry.Compression_Flag)
+                                        switch (af.fileEntry.compressionFlag)
                                         {
                                             // Uncompressed
                                             case 0:
-                                                bw.Write(br.ReadBytes(af.file_entry.Decompressed_Size));
+                                                bw.Write(br.ReadBytes(af.fileEntry.decompressedSize));
                                                 break;
                                             // zlib Compressed
                                             case 1:
-                                                bw.Write(ZlibStream.UncompressBuffer(br.ReadBytes(af.file_entry.Compressed_Size)));
+                                                bw.Write(ZlibStream.UncompressBuffer(br.ReadBytes(af.fileEntry.compressedSize)));
                                                 break;
                                             // Trials Evoultion lzx compressed
                                             case 4:
                                                 break;
                                             // Trials Evolution zlib compressed
                                             case 8:
-                                                bw.Write(ZlibStream.UncompressBuffer(br.ReadBytes(af.file_entry.Compressed_Size)));
+                                                bw.Write(ZlibStream.UncompressBuffer(br.ReadBytes(af.fileEntry.compressedSize)));
                                                 break;
                                             // Unknown Case (Found in data_patch.pak)
                                             case 16:
-                                                bw.Write(br.ReadBytes(af.file_entry.Compressed_Size));
+                                                bw.Write(br.ReadBytes(af.fileEntry.compressedSize));
                                                 break;
                                             // Unknown Case (Found in data_patch.pak)
                                             case 17:
-                                                bw.Write(br.ReadBytes(af.file_entry.Compressed_Size));
+                                                bw.Write(br.ReadBytes(af.fileEntry.compressedSize));
                                                 break;
                                         }
                                     }
@@ -377,13 +378,13 @@ namespace FusionExplorer
             ArchiveFile selected_archive_file = get_selected_archive_file();
             byte[] compressed_data = ZlibStream.CompressBuffer(data);
             bool compressed = false;
-            if (selected_archive_file.file_entry.Compression_Flag == 1 || selected_archive_file.file_entry.Compression_Flag == 8)
+            if (selected_archive_file.fileEntry.compressionFlag == 1 || selected_archive_file.fileEntry.compressionFlag == 8)
                 compressed = true;
 
             using (MemoryStream ms = new MemoryStream(pak_data))
             {
                 // update file entry compressed and uncompressed sizes
-                ms.Position = selected_archive_file.file_entry.File_Entry_Offset + 4;
+                ms.Position = selected_archive_file.fileEntry.fileEntryOffset + 4;
                 if (compressed)
                     ms.Write(BitConverter.GetBytes(compressed_data.Length), 0, 4);
                 else
@@ -392,18 +393,16 @@ namespace FusionExplorer
 
                 // set the archive sizes as we use them in the update_data_offsets function to recalculate the data offsets
                 if (compressed)
-                    selected_archive_file.file_entry.Compressed_Size = compressed_data.Length;
+                    selected_archive_file.fileEntry.compressedSize = compressed_data.Length;
                 else
-                    selected_archive_file.file_entry.Compressed_Size = data.Length;
-                selected_archive_file.file_entry.Decompressed_Size = data.Length;
+                    selected_archive_file.fileEntry.compressedSize = data.Length;
+                selected_archive_file.fileEntry.decompressedSize = data.Length;
 
-                // getting the data offset for the next archive file (start offset for the ending stride)
-                int next_archive_index = archive_files.IndexOf(selected_archive_file) + 1;
-                ms.Position = archive_files[next_archive_index].file_entry.Data_Offset;
+                ms.Position = selected_archive_file.fileEntry.dataOffset + selected_archive_file.fileEntry.compressedSize;
 
                 // must calculate the ending stride length before update_data_offsets is called, as we're taking the data from the unaltered pak data
                 // read ending stride [c]
-                byte[] ending = new byte[pak_data.Length - archive_files[next_archive_index].file_entry.Data_Offset];
+                byte[] ending = new byte[pak_data.Length - (selected_archive_file.fileEntry.dataOffset + selected_archive_file.fileEntry.compressedSize)];
                 ms.Read(ending, 0, ending.Length);
 
                 // update data_offsets
@@ -413,7 +412,7 @@ namespace FusionExplorer
                 // position stream at the beginning of data ready to read the [a] stride
                 // data offset of selected file is the ending of the [a] stride
                 ms.Position = 0;
-                byte[] beginning = new byte[selected_archive_file.file_entry.Data_Offset];
+                byte[] beginning = new byte[selected_archive_file.fileEntry.dataOffset];
                 ms.Read(beginning, 0, beginning.Length);
 
 
@@ -447,14 +446,14 @@ namespace FusionExplorer
         {
             ArchiveFile selected_archive_file = get_selected_archive_file();
             string formattedStr = string.Format("Compressed Size: {0:n0} bytes\nSize: {1:n0} bytes\nCompressed: {2}\nData Offset: 0x{3} ({4})\nEntry Offset: 0x{5} ({6})\nID: {7}",
-                            selected_archive_file.file_entry.Compressed_Size, 
-                            selected_archive_file.file_entry.Decompressed_Size, 
-                            BitConverter.ToBoolean(new byte[] { selected_archive_file.file_entry.Compression_Flag }, 0).ToString(), 
-                            selected_archive_file.file_entry.Data_Offset.ToString("X"), 
-                            selected_archive_file.file_entry.Data_Offset, 
-                            selected_archive_file.file_entry.File_Entry_Offset.ToString("X"),
-                            selected_archive_file.file_entry.File_Entry_Offset,
-                            selected_archive_file.file_entry.Dummy);
+                            selected_archive_file.fileEntry.compressedSize, 
+                            selected_archive_file.fileEntry.decompressedSize, 
+                            BitConverter.ToBoolean(new byte[] { selected_archive_file.fileEntry.compressionFlag }, 0).ToString(), 
+                            selected_archive_file.fileEntry.dataOffset.ToString("X"), 
+                            selected_archive_file.fileEntry.dataOffset, 
+                            selected_archive_file.fileEntry.fileEntryOffset.ToString("X"),
+                            selected_archive_file.fileEntry.fileEntryOffset,
+                            selected_archive_file.fileEntry.ID);
             MessageBox.Show(formattedStr, selected_archive_file.filename);
         }
 
@@ -471,17 +470,17 @@ namespace FusionExplorer
             {
                 using (BinaryReader br = new BinaryReader(ms))
                 {
-                    br.BaseStream.Seek(selected_archive_file.file_entry.Data_Offset, SeekOrigin.Begin);
+                    br.BaseStream.Seek(selected_archive_file.fileEntry.dataOffset, SeekOrigin.Begin);
 
-                    switch (selected_archive_file.file_entry.Compression_Flag)
+                    switch (selected_archive_file.fileEntry.compressionFlag)
                     {
                         // Uncompressed
                         case 0:
-                                tex = br.ReadBytes(selected_archive_file.file_entry.Decompressed_Size);
+                                tex = br.ReadBytes(selected_archive_file.fileEntry.decompressedSize);
                             break;
                         // zlib Compressed
                         case 1:
-                                tex = ZlibStream.UncompressBuffer(br.ReadBytes(selected_archive_file.file_entry.Compressed_Size));
+                                tex = ZlibStream.UncompressBuffer(br.ReadBytes(selected_archive_file.fileEntry.compressedSize));
                             break;
                     }
                 }
@@ -553,6 +552,21 @@ namespace FusionExplorer
             }
         }
 
+        private void add_new_file(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                ArchiveFile selected_file = get_selected_archive_file();
+                byte[] data = File.ReadAllBytes(ofd.FileName);
+            }
+        }
+
+        private void add_new_dds(object sender, EventArgs e)
+        {
+
+        }
+
         private void open_with_hxd(object sender, EventArgs e)
         {
             string path = Path.GetTempFileName();
@@ -582,7 +596,7 @@ namespace FusionExplorer
                 using (BinaryReader br = new BinaryReader(ms))
                 {
                     // Goto data offset of selected file
-                    br.BaseStream.Seek(selected_archive_file.file_entry.Data_Offset, SeekOrigin.Begin);
+                    br.BaseStream.Seek(selected_archive_file.fileEntry.dataOffset, SeekOrigin.Begin);
 
                     // Obtain Path and Filename as seperate strings (ex: "/localization/", "evo1_chinese.xml")
                     string[] split_filename = filename_split(selected_archive_file.filename);
@@ -595,27 +609,27 @@ namespace FusionExplorer
                     // Create the file being exported and setup BinaryWriter to write the data
                     using (BinaryWriter bw = new BinaryWriter(File.Create(dir + split_filename[1])))
                     {
-                        switch (selected_archive_file.file_entry.Compression_Flag)
+                        switch (selected_archive_file.fileEntry.compressionFlag)
                         {
                             // Uncompressed
                             case 0:
-                                return br.ReadBytes(selected_archive_file.file_entry.Decompressed_Size);
+                                return br.ReadBytes(selected_archive_file.fileEntry.decompressedSize);
                             // zlib Compressed
                             case 1:
-                                return ZlibStream.UncompressBuffer(br.ReadBytes(selected_archive_file.file_entry.Compressed_Size));
+                                return ZlibStream.UncompressBuffer(br.ReadBytes(selected_archive_file.fileEntry.compressedSize));
                             // Trials Evolution (Xbox 360) lzx compressed
                             case 4:
                                 // Unsupported
                                 break;
                             // Trials Evolution: Gold Edition zlib compressed
                             case 8:
-                                return ZlibStream.UncompressBuffer(br.ReadBytes(selected_archive_file.file_entry.Compressed_Size));
+                                return ZlibStream.UncompressBuffer(br.ReadBytes(selected_archive_file.fileEntry.compressedSize));
                             // Unknown Case (Found in data_patch.pak)
                             case 16:
-                                return br.ReadBytes(selected_archive_file.file_entry.Compressed_Size);
+                                return br.ReadBytes(selected_archive_file.fileEntry.compressedSize);
                             // Unknown Case (Found in data_patch.pak)
                             case 17:
-                                return br.ReadBytes(selected_archive_file.file_entry.Compressed_Size);
+                                return br.ReadBytes(selected_archive_file.fileEntry.compressedSize);
                         }
                     }
                 }
@@ -644,10 +658,10 @@ namespace FusionExplorer
                         // Seek to the Data Offset section of file entries (ms.write makes up the other 4 byte forward movement)
                         ms.Seek(13, SeekOrigin.Current);
                         // Offset calculation
-                        offset += archive_files[i - 1].file_entry.Compressed_Size;
+                        offset += archive_files[i - 1].fileEntry.compressedSize;
 
                         // Update our ArchiveFile list
-                        archive_files[i].file_entry.Data_Offset = offset;
+                        archive_files[i].fileEntry.dataOffset = offset;
                         // Update the pak data
                         ms.Write(BitConverter.GetBytes(offset), 0, 4);
                     }
@@ -689,38 +703,38 @@ namespace FusionExplorer
 
         public class ArchiveFile
         {
-            public file_entry file_entry;
+            public FileEntry fileEntry;
             public string filename;
             public TreeNode tree_node;
         }
 
-        public class file_entry
+        public class FileEntry
         {
-            public file_entry(int Compressed_Size, int Decompressed_Size, byte Compression_Flag, int Data_Offset, long File_Entry_Offset)
+            public FileEntry(int CompressedSize, int DecompressedSize, byte CompressionFlag, int DataOffset, long FileEntryOffset)
             {
-                this.Compressed_Size = Compressed_Size;
-                this.Decompressed_Size = Decompressed_Size;
-                this.Compression_Flag = Compression_Flag;
-                this.Data_Offset = Data_Offset;
-                this.File_Entry_Offset = File_Entry_Offset;
+                this.compressedSize = CompressedSize;
+                this.decompressedSize = DecompressedSize;
+                this.compressionFlag = CompressionFlag;
+                this.dataOffset = DataOffset;
+                this.fileEntryOffset = FileEntryOffset;
             }
 
-            public file_entry(int Dummy, int Compressed_Size, int Decompressed_Size, byte Compression_Flag, int Data_Offset, long File_Entry_Offset)
+            public FileEntry(int ID, int CompressedSize, int DecompressedSize, byte CompressionFlag, int DataOffset, long FileEntryOffset)
             {
-                this.Dummy = Dummy;
-                this.Compressed_Size = Compressed_Size;
-                this.Decompressed_Size = Decompressed_Size;
-                this.Compression_Flag = Compression_Flag;
-                this.Data_Offset = Data_Offset;
-                this.File_Entry_Offset = File_Entry_Offset;
+                this.ID = ID;
+                this.compressedSize = CompressedSize;
+                this.decompressedSize = DecompressedSize;
+                this.compressionFlag = CompressionFlag;
+                this.dataOffset = DataOffset;
+                this.fileEntryOffset = FileEntryOffset;
             }
 
-            public int Dummy { get; set; }
-            public int Compressed_Size { get; set; }
-            public int Decompressed_Size { get; set; }
-            public byte Compression_Flag { get; set; }
-            public int Data_Offset { get; set; }
-            public long File_Entry_Offset { get; set; }
+            public int ID { get; set; }
+            public int compressedSize { get; set; }
+            public int decompressedSize { get; set; }
+            public byte compressionFlag { get; set; }
+            public int dataOffset { get; set; }
+            public long fileEntryOffset { get; set; }
         }
 
         private void closeFileToolStripMenuItem_Click(object sender, EventArgs e)
@@ -847,7 +861,20 @@ namespace FusionExplorer
 
         private void btnCustomization_Click(object sender, EventArgs e)
         {
+            Customization customization = new Customization();
+            customization.Show();
+        }
 
+        private void imageRipperToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ImageRipper form = new ImageRipper();
+            form.Show();
+        }
+
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            PixelArtGenerator form = new PixelArtGenerator();
+            form.Show();
         }
     }
 }

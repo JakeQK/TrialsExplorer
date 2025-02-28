@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Ookii.Dialogs.WinForms;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -28,11 +29,33 @@ namespace FusionExplorer
                 byte[] data = File.ReadAllBytes(ofd.FileName);
 
 
-                Notepad.ShowMessage(ParseOC2(data));
+                //Notepad.ShowMessage(ParseOC2(data));
+
+                VistaSaveFileDialog sfd = new VistaSaveFileDialog();
+                if(sfd.ShowDialog() == DialogResult.OK)
+                {
+                    using(StreamWriter sw = new StreamWriter(File.Create(sfd.FileName)))
+                    {
+                        sw.Write(ParseOC2(data));
+                    }
+                }
 
             }
 
 
+        }
+
+        string AttributeNameParser(int id)
+        {
+            switch (id)
+            {
+                case 2448146:
+                    return "objectId";
+                case -2060945186:
+                    return "colorPartId";
+                default: 
+                    return id.ToString("X8");
+            }
         }
 
         string ParseOC(byte[] data)
@@ -138,7 +161,7 @@ namespace FusionExplorer
                     {
                         switch (reader.ReadByte())
                         {
-                            case 0x00:
+                            case 0x00: // 00 proceeded by 01 = ">", sometimes there is muliple 00's which I don't understand
                                 {
                                     int count = 1;
                                     while (reader.ReadByte() != 0x01)
@@ -155,7 +178,7 @@ namespace FusionExplorer
                                         sb.Append(">\n");
                                 }
                                 break;
-                            case 0x01:
+                            case 0x01: // 01 proceeded by 00 = "<" or " " depending on if it's in a state of closed
                                 if (reader.ReadByte() == 0x00)
                                 {
                                     // open
@@ -164,24 +187,37 @@ namespace FusionExplorer
                                     else
                                         sb.Append(" ");
                                     int id = reader.ReadInt32();
-                                    sb.Append(id.ToString("X8"));
+                                    string attributeName = AttributeNameParser(id);
+                                    sb.Append(attributeName);
                                     closed = false;
                                 }
                                 break;
 
                             case 0x03:
                                 {
+                                    /*
                                     reader.ReadInt16();
                                     string value = reader.ReadInt32().ToString();
-                                    sb.Append(string.Format(" = {0}{1}'{2}'", "3", value.Length, value));
+                                     */
+                                    Int16 len = reader.ReadInt16();
+                                    byte[] value_bytes = reader.ReadBytes(len);
+                                    //Array.Reverse(value_bytes);
+                                    string value = BitConverter.ToInt32(value_bytes, 0).ToString();
+
+                                    //sb.Append(string.Format(" = {0}{1}'{2}'", "3", value.Length, value));
+                                    sb.Append(string.Format("=\"{0}\"", value));
                                 }
                                 break;
 
                             case 0x04:
                                 {
-                                    reader.ReadInt16();
-                                    string value = reader.ReadInt32().ToString();
-                                    sb.Append(string.Format(" = {0}{1}'{2}'", "4", value.Length, value));
+                                    Int16 len = reader.ReadInt16();
+                                    byte[] value_bytes = reader.ReadBytes(len);
+                                    //Array.Reverse(value_bytes);
+                                    string value = BitConverter.ToInt32(value_bytes, 0).ToString();
+
+                                    //sb.Append(string.Format(" = {0}{1}'{2}'", "4", value.Length, value));
+                                    sb.Append(string.Format("=\"{0}\"", value));
                                 }
                                 break;
 
@@ -190,21 +226,30 @@ namespace FusionExplorer
                                     Int16 strlen = reader.ReadInt16();
                                     string str = new string(reader.ReadChars(strlen - 1));
                                     reader.ReadByte(); // null terminator
-                                    sb.Append(string.Format(" = {0}{1}'{2}'", "6", str.Length, str));
+                                    //sb.Append(string.Format(" = {0}{1}'{2}'", "6", str.Length, str));
+                                    sb.Append(string.Format("=\"{0}\"", str));
                                 }
                                 break;
                             case 0x05:
                                 {
-                                    reader.ReadInt16();
-                                    string value = reader.ReadSingle().ToString();
-                                    sb.Append(string.Format(" = {0}{1}'{2}'", "5", value.Length, value));
+                                    Int16 len = reader.ReadInt16();
+                                    byte[] value_bytes = reader.ReadBytes(len);
+                                    //Array.Reverse(value_bytes);
+                                    string value = BitConverter.ToSingle(value_bytes, 0).ToString();
+
+                                    //sb.Append(string.Format(" = {0}{1}'{2}'", "5", value.Length, value));
+                                    sb.Append(string.Format("=\"{0}\"", value));
                                 }
                                 break;
                             default:
                                 {
-                                    reader.ReadInt16();
-                                    string value = reader.ReadInt32().ToString();
-                                    sb.Append(string.Format(" = {0}{1}'{2}'", "3", value.Length, value));
+                                    Int16 len = reader.ReadInt16();
+                                    byte[] value_bytes = reader.ReadBytes(len);
+                                    //Array.Reverse(value_bytes);
+                                    string value = BitConverter.ToInt32(value_bytes, 0).ToString();
+
+                                    //sb.Append(string.Format(" = {0}{1}'{2}'", "3", value.Length, value));
+                                    sb.Append(string.Format("=\"{0}\"", value));
                                 }
                                 break;
                         }

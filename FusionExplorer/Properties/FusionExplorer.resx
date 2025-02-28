@@ -130,7 +130,7 @@
     <value>\nVersion 1.0.3</value>
   </data>
   <data name="DROP_DOWN_BUTTON_FILE" xml:space="preserve">
-    <value>English</value>
+    <value>File</value>
   </data>
   <data name="FE_ADD_OBJECT" xml:space="preserve">
     <value>Add Object</value>
@@ -162,6 +162,9 @@
   <data name="FE_DECOMPRESS" xml:space="preserve">
     <value>Decompress</value>
   </data>
+  <data name="FE_DECORATION_ONLY" xml:space="preserve">
+    <value>Decoration Only</value>
+  </data>
   <data name="FE_DONT_RESET_POSITION" xml:space="preserve">
     <value>Dont Reset Position</value>
   </data>
@@ -173,6 +176,12 @@
   </data>
   <data name="FE_FAVOURITE_EDITOR" xml:space="preserve">
     <value>Favourite Editor</value>
+  </data>
+  <data name="FE_HIT_RESPONSE" xml:space="preserve">
+    <value>Hit Response</value>
+  </data>
+  <data name="FE_INITIAL_STATE" xml:space="preserve">
+    <value>Initial State</value>
   </data>
   <data name="FE_INVISIBLE" xml:space="preserve">
     <value>Invisible</value>
@@ -194,6 +203,9 @@
   </data>
   <data name="FE_NO_CONTACAT_RESPONSE" xml:space="preserve">
     <value>No Contact Response</value>
+  </data>
+  <data name="FE_NO_HIT_RESPONSE" xml:space="preserve">
+    <value>No Hit Response</value>
   </data>
   <data name="FE_OPEN_DIRECTORY" xml:space="preserve">
     <value>Open Directory</value>
@@ -295,7 +307,7 @@
     <value>Open with HxD</value>
   </data>
   <data name="ITEM_CONTEXTMENU_IMPORT" xml:space="preserve">
-    <value>Import</value>
+    <value>Replace</value>
   </data>
   <data name="ITEM_CONTEXTMENU_INFO" xml:space="preserve">
     <value>Info</value>
@@ -313,10 +325,10 @@
     <value>Open with HxD</value>
   </data>
   <data name="TEXTURE_CONTEXTMENU_IMPORT" xml:space="preserve">
-    <value>Import</value>
+    <value>Replace</value>
   </data>
   <data name="TEXTURE_CONTEXTMENU_IMPORT_DDS" xml:space="preserve">
-    <value>Import DDS</value>
+    <value>Replace DDS</value>
   </data>
   <data name="TEXTURE_CONTEXTMENU_INFO" xml:space="preserve">
     <value>Info</value>

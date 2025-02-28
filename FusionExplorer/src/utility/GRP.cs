@@ -366,14 +366,13 @@ namespace FusionExplorer
                 NoCollision = noCollision;
             }
 
-
             public short ToInt16()
             {
                 short return_value = 0;
                 Utility.SetBit(ref return_value, 0, NonDefaultPhysics);
                 Utility.SetBit(ref return_value, 1, NoCollisionSound);
                 Utility.SetBit(ref return_value, 2, FastObject);
-                Utility.SetBit(ref return_value, 3, DontResetPosition);
+                Utility.SetBit(ref return_value, 3, Invisible);
                 Utility.SetBit(ref return_value, 4, flag_5);
                 Utility.SetBit(ref return_value, 5, flag_6);
                 Utility.SetBit(ref return_value, 6, flag_7);
@@ -381,7 +380,7 @@ namespace FusionExplorer
                 Utility.SetBit(ref return_value, 8, Physics);
                 Utility.SetBit(ref return_value, 9, flag_10);
                 Utility.SetBit(ref return_value, 10, LockToDrivingLine);
-                Utility.SetBit(ref return_value, 11, Invisible);
+                Utility.SetBit(ref return_value, 11, DontResetPosition);
                 Utility.SetBit(ref return_value, 12, flag_13);
                 Utility.SetBit(ref return_value, 13, flag_14);
                 Utility.SetBit(ref return_value, 14, NoContactResponse);
@@ -394,7 +393,7 @@ namespace FusionExplorer
                 NonDefaultPhysics = (properties & (1 << 0)) == (1 << 0);
                 NoCollisionSound = (properties & (1 << 1)) == (1 << 1);
                 FastObject = (properties & (1 << 2)) == (1 << 2);
-                DontResetPosition = (properties & (1 << 3)) == (1 << 3);
+                Invisible = (properties & (1 << 3)) == (1 << 3);
                 flag_5 = (properties & (1 << 4)) == (1 << 4);
                 flag_6 = (properties & (1 << 5)) == (1 << 5);
                 flag_7 = (properties & (1 << 6)) == (1 << 6);
@@ -402,7 +401,7 @@ namespace FusionExplorer
                 Physics = (properties & (1 << 8)) == (1 << 8);
                 flag_10 = (properties & (1 << 9)) == (1 << 9);
                 LockToDrivingLine = (properties & (1 << 10)) == (1 << 10);
-                Invisible = (properties & (1 << 11)) == (1 << 11);
+                DontResetPosition = (properties & (1 << 11)) == (1 << 11);
                 flag_13 = (properties & (1 << 12)) == (1 << 12);
                 flag_14 = (properties & (1 << 13)) == (1 << 13);
                 NoContactResponse = (properties & (1 << 14)) == (1 << 14);
@@ -413,7 +412,7 @@ namespace FusionExplorer
             public bool NonDefaultPhysics { get; set; }
             public bool NoCollisionSound { get; set; }
             public bool FastObject { get; set; }
-            public bool DontResetPosition { get; set; }
+            public bool Invisible { get; set; }
             public bool flag_5 { get; set; }
             public bool flag_6 { get; set; }
             public bool flag_7 { get; set; }
@@ -421,7 +420,7 @@ namespace FusionExplorer
             public bool Physics { get; set; }
             public bool flag_10 { get; set; }
             public bool LockToDrivingLine { get; set; }
-            public bool Invisible { get; set; }
+            public bool DontResetPosition { get; set; }
             public bool flag_13 { get; set; }
             public bool flag_14 { get; set; }
             public bool NoContactResponse { get; set; }
