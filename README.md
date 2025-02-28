@@ -13,7 +13,7 @@ A specialized tool for exploring, extracting, modifying, and repackaging game fi
 
 ## Usage
 
-1. **Open an Archive**: Click "File" → "Open" and select a Trials game archive file
+1. **Open an Archive**: Click "File" → "Open" and select a Trials game archive file (*.pak)
 2. **Browse Files**: Use the file tree to navigate through the archive contents
 3. **Extract Files**: Right-click on any file and select "Extract"
 4. **Replace Files**: Right-click on a file and select "Replace" to swap with your custom version
