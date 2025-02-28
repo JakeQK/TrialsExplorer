@@ -492,64 +492,64 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="src\Customization.cs">
+    <Compile Include="Forms\Customization.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\Customization.Designer.cs">
+    <Compile Include="Forms\Customization.Designer.cs">
       <DependentUpon>Customization.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\ObjectCollection.cs">
+    <Compile Include="Forms\ObjectCollection.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\ObjectCollection.Designer.cs">
+    <Compile Include="Forms\ObjectCollection.Designer.cs">
       <DependentUpon>ObjectCollection.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\PAK.cs" />
-    <Compile Include="src\PixelArtGenerator.cs">
+    <Compile Include="Utils\PAK.cs" />
+    <Compile Include="Forms\PixelArtGenerator.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\PixelArtGenerator.Designer.cs">
+    <Compile Include="Forms\PixelArtGenerator.Designer.cs">
       <DependentUpon>PixelArtGenerator.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\utility\DirectBitmap.cs" />
-    <Compile Include="src\FusionExplorer.cs">
+    <Compile Include="Utils\DirectBitmap.cs" />
+    <Compile Include="Forms\FusionExplorer.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\FusionExplorer.Designer.cs">
+    <Compile Include="Forms\FusionExplorer.Designer.cs">
       <DependentUpon>FusionExplorer.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\EditorFavouritesTool.cs">
+    <Compile Include="Forms\EditorFavouritesTool.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\EditorFavouritesTool.Designer.cs">
+    <Compile Include="Forms\EditorFavouritesTool.Designer.cs">
       <DependentUpon>EditorFavouritesTool.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\utility\GRP.cs" />
-    <Compile Include="src\utility\Notepad.cs" />
-    <Compile Include="src\ArchiveBuilder.cs">
+    <Compile Include="Utils\GRP.cs" />
+    <Compile Include="Utils\Notepad.cs" />
+    <Compile Include="Forms\ArchiveBuilder.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\ArchiveBuilder.Designer.cs">
+    <Compile Include="Forms\ArchiveBuilder.Designer.cs">
       <DependentUpon>ArchiveBuilder.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\utility\PakBuilder.cs" />
+    <Compile Include="Utils\PakBuilder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="src\TrackTool.cs">
+    <Compile Include="Forms\TrackTool.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\TrackTool.Designer.cs">
+    <Compile Include="Forms\TrackTool.Designer.cs">
       <DependentUpon>TrackTool.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\TextureViewer.cs">
+    <Compile Include="Forms\TextureViewer.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\TextureViewer.Designer.cs">
+    <Compile Include="Forms\TextureViewer.Designer.cs">
       <DependentUpon>TextureViewer.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\utility\PixelArt.cs" />
-    <Compile Include="src\utility\Texture.cs" />
-    <Compile Include="src\utility\Utility.cs" />
+    <Compile Include="Utils\PixelArt.cs" />
+    <Compile Include="Utils\Texture.cs" />
+    <Compile Include="Utils\Utility.cs" />
     <EmbeddedResource Include="ImageRipper.resx">
       <DependentUpon>ImageRipper.cs</DependentUpon>
     </EmbeddedResource>
@@ -565,28 +565,28 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\Customization.resx">
+    <EmbeddedResource Include="Forms\Customization.resx">
       <DependentUpon>Customization.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\FusionExplorer.resx">
+    <EmbeddedResource Include="Forms\FusionExplorer.resx">
       <DependentUpon>FusionExplorer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\ArchiveBuilder.resx">
+    <EmbeddedResource Include="Forms\ArchiveBuilder.resx">
       <DependentUpon>ArchiveBuilder.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\ObjectCollection.resx">
+    <EmbeddedResource Include="Forms\ObjectCollection.resx">
       <DependentUpon>ObjectCollection.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\PixelArtGenerator.resx">
+    <EmbeddedResource Include="Forms\PixelArtGenerator.resx">
       <DependentUpon>PixelArtGenerator.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\TrackTool.resx">
+    <EmbeddedResource Include="Forms\TrackTool.resx">
       <DependentUpon>TrackTool.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\TextureViewer.resx">
+    <EmbeddedResource Include="Forms\TextureViewer.resx">
       <DependentUpon>TextureViewer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\EditorFavouritesTool.resx">
+    <EmbeddedResource Include="Forms\EditorFavouritesTool.resx">
       <DependentUpon>EditorFavouritesTool.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="FusionExplorer.config" />
