@@ -876,5 +876,18 @@ namespace FusionExplorer
             PixelArtGenerator form = new PixelArtGenerator();
             form.Show();
         }
+
+        private void tvDirectoryDisplay_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                TreeNode node = tvDirectoryDisplay.GetNodeAt(e.X, e.Y);
+
+                if(node != null)
+                {
+                    tvDirectoryDisplay.SelectedNode = node;
+                }
+            }
+        }
     }
 }

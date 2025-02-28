@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Localization;
+﻿using System.Windows.Forms;
+using Microsoft.Extensions.Localization;
 
 namespace FusionExplorer {
     partial class FusionExplorer {
@@ -168,6 +169,7 @@ namespace FusionExplorer {
             this.tvDirectoryDisplay.ImageList = this.DirectoryDisplayImageList;
             this.tvDirectoryDisplay.Name = "tvDirectoryDisplay";
             this.tvDirectoryDisplay.DoubleClick += new System.EventHandler(this.tvDirectoryDisplay_DoubleClick);
+            this.tvDirectoryDisplay.MouseDown += new MouseEventHandler(this.tvDirectoryDisplay_MouseDown);
             // 
             // DirectoryDisplayImageList
             // 
