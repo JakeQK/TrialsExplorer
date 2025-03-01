@@ -115,22 +115,38 @@ namespace FusionExplorer
         private void SetupContextMenus()
         {
             fileContextMenu = new ContextMenuStrip();
-            fileContextMenu.Items.Add("Extract File", null, ExtractFile_Click);
+            fileContextMenu.Items.Add("Quick extract", null, QuickExtractFile_Click);
+            fileContextMenu.Items.Add("Extract to selected path", null, ExtractFileToSelectedPath_Click);
+            fileContextMenu.Items.Add(new ToolStripSeparator());
+            fileContextMenu.Items.Add("Properties", null, null);
 
             directoryContextMenu = new ContextMenuStrip();
-            directoryContextMenu.Items.Add("Extract Directory", null, ExtractDirectory_Click);
-
+            directoryContextMenu.Items.Add("Quick extract directory", null, QuickExtractDirectory_Click);
+            directoryContextMenu.Items.Add("Extract directory to selected path", null, ExtractDirectoryToSelectedPath_Click);
         }
 
-        private void ExtractFile_Click(object sender, EventArgs e)
+        private void QuickExtractFile_Click(object sender, EventArgs e)
         {
             if (tvDirectoryDisplay.SelectedNode?.Tag is Models.ArchiveFile file)
             {
-                service.ExtractFileToExtractsFolder(file);
+                service.QuickExtractFile(file);
             }
         }
 
-        private void ExtractDirectory_Click(object sender, EventArgs e)
+        private void ExtractFileToSelectedPath_Click(object sender, EventArgs e)
+        {
+            if (tvDirectoryDisplay.SelectedNode?.Tag is Models.ArchiveFile file)
+            {
+                service.ExtractFileToSelectedPath(file);
+            }
+        }
+
+        private void QuickExtractDirectory_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void ExtractDirectoryToSelectedPath_Click(object sender, EventArgs e)
         {
 
         }

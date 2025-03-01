@@ -261,7 +261,7 @@ namespace FusionExplorer.Services
             }
         }
 
-        public void ExtractFileToExtractsFolder(ArchiveFile file)
+        public void QuickExtractFile(ArchiveFile file)
         {
             try
             {
@@ -269,7 +269,7 @@ namespace FusionExplorer.Services
 
                 if (data != null)
                 {
-                    string fullPath = Path.Combine(Application.StartupPath, Path.GetFileName(_currentFilePath), file.DirectoryPath);
+                    string fullPath = Path.Combine(Application.StartupPath,"Extracted Files", Path.GetFileName(_currentFilePath), file.DirectoryPath);
 
                     Directory.CreateDirectory(fullPath);
 
@@ -286,5 +286,57 @@ namespace FusionExplorer.Services
                 MessageBox.Show($"Failed to extract file to extracts folder: {ex.Message}");
             }
         }
+
+        public void ExtractFileToSelectedPath(ArchiveFile file)
+        {
+            try
+            {
+                // Extract the file data
+                byte[] data = ExtractFile(file);
+
+                if (data != null)
+                {
+                    // Create and configure Save File Dialog
+                    using (SaveFileDialog saveDialog = new SaveFileDialog())
+                    {
+                        saveDialog.FileName = file.Name;
+                        saveDialog.Title = "Save Extracted File";
+                        saveDialog.Filter = "All Files (*.*)|*.*";
+                        saveDialog.OverwritePrompt = true;
+
+                        // Show the dialog and get result
+                        if (saveDialog.ShowDialog() == DialogResult.OK)
+                        {
+                            string selectedPath = saveDialog.FileName;
+
+                            // Create directory if it doesn't exist
+                            string directory = Path.GetDirectoryName(selectedPath);
+                            if (!Directory.Exists(directory))
+                            {
+                                Directory.CreateDirectory(directory);
+                            }
+
+                            // Write the file to the selected location
+                            using (BinaryWriter writer = new BinaryWriter(File.Create(selectedPath)))
+                            {
+                                writer.Write(data);
+                            }
+
+                            // MessageBox.Show($"File successfully extracted to: {selectedPath}");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to extract file: {ex.Message}");
+            }
+        }
+
+        public void ExtractDirectory(ArchiveDirectory directory)
+        {
+
+        }
+
     }
 }
