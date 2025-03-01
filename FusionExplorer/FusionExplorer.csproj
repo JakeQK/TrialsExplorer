@@ -477,6 +477,11 @@
     <Compile Include="ImageRipper.Designer.cs">
       <DependentUpon>ImageRipper.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models\ArchiveDirectory.cs" />
+    <Compile Include="Models\ArchiveFile.cs" />
+    <Compile Include="Models\ArchiveHeader.cs" />
+    <Compile Include="Models\ArchiveFileEntry.cs" />
+    <Compile Include="Models\IArchiveNode.cs" />
     <Compile Include="Properties\FusionExplorer.Designer.cs">
       <DependentUpon>FusionExplorer.resx</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -504,6 +509,7 @@
     <Compile Include="Forms\ObjectCollection.Designer.cs">
       <DependentUpon>ObjectCollection.cs</DependentUpon>
     </Compile>
+    <Compile Include="Services\ArchiveService.cs" />
     <Compile Include="Utils\PAK.cs" />
     <Compile Include="Forms\PixelArtGenerator.cs">
       <SubType>Form</SubType>
@@ -609,11 +615,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="aup8i-rmim2-001.ico" />
-    <None Include="resources\CustomRider.dds" />
-    <None Include="resources\CustomRiderImage.bmp" />
-    <None Include="resources\Techboy_A_Pants.png.bmp" />
-    <None Include="resources\Techboy_A_Head.png.bmp" />
-    <None Include="resources\Techboy_A_Body.bmp" />
+    <None Include="Resources\CustomRider.dds" />
+    <None Include="Resources\CustomRiderImage.bmp" />
+    <None Include="Resources\Techboy_A_Pants.png.bmp" />
+    <None Include="Resources\Techboy_A_Head.png.bmp" />
+    <None Include="Resources\Techboy_A_Body.bmp" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">

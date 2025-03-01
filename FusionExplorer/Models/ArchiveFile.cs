@@ -7,11 +7,13 @@ using System.Threading.Tasks;
 
 namespace FusionExplorer.Models
 {
-    public class ArchiveFile
+    public class ArchiveFile : IArchiveNode
     {
         public ArchiveFileEntry ArchiveFileEntry { get; set; }
 
-        public string Filename { get; set; }
+        public string Name => Path.GetFileName(FullPath); 
+        public bool IsDirectory => false;
+        public string FullPath { get; set; }
 
         public ArchiveFile()
         {
@@ -21,11 +23,13 @@ namespace FusionExplorer.Models
         public ArchiveFile(ArchiveFileEntry archiveFileEntry, string filename)
         {
             ArchiveFileEntry = archiveFileEntry;
-            Filename = filename;
+            FullPath = filename;
         }
 
-        public string SafeFilename => Path.GetFileName(Filename);
+        public string SafeFilename => Name;
 
-        public string FileDirectory => Path.GetDirectoryName(Filename);
+        public string DirectoryPath => Path.GetDirectoryName(FullPath);
+
+        public bool IsFilenameTable => ArchiveFileEntry.IsFilenameTableEntry();
     }
 }

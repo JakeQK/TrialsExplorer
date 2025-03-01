@@ -18,6 +18,8 @@ namespace FusionExplorer.Services
         private List<ArchiveFile> _files;
         private bool _isDirty = false;
 
+        private ArchiveDirectory _rootDirectory;
+
         public event EventHandler ArchiveOpened;
         public event EventHandler ArchiveSaved;
 
@@ -33,11 +35,17 @@ namespace FusionExplorer.Services
             {
                 _archiveData = File.ReadAllBytes(filePath);
                 _currentFilePath = filePath;
-                return ParseArchiveStructure();
+
+                if (!ParseArchiveStructure())
+                {
+                    return false;
+                }
+
+                return BuildFileHierarchy();
             }
             catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show($"Error opening archive: {ex.Message}");
+                MessageBox.Show($"Error opening archive: {ex.Message}");
                 
                 _archiveData = null;
                 _currentFilePath = null;
@@ -50,7 +58,7 @@ namespace FusionExplorer.Services
         {
             try
             {
-                using(MemoryStream ms = new MemoryStream())
+                using(MemoryStream ms = new MemoryStream(_archiveData))
                 using(BinaryReader reader = new BinaryReader(ms))
                 {
                     _header = new ArchiveHeader
@@ -102,7 +110,7 @@ namespace FusionExplorer.Services
             }
             catch (Exception ex )
             {
-                System.Windows.Forms.MessageBox.Show($"Failed to parse archive structure: {ex.Message}");
+                MessageBox.Show($"Failed to parse archive structure: {ex.Message}");
 
                 return false;
             }
@@ -112,18 +120,12 @@ namespace FusionExplorer.Services
         {
             try
             {
-                using(MemoryStream ms = new MemoryStream())
+                using(MemoryStream ms = new MemoryStream(_archiveData))
                 using(BinaryReader br = new BinaryReader(ms))
                 {
                     br.BaseStream.Seek(filenameTable.ArchiveFileEntry.OffsetToData, SeekOrigin.Begin);
 
                     uint _count = br.ReadUInt32();
-
-                    for(int i = 0; i < _count; i++)
-                    {
-                        UInt16 _stringLength = br.ReadUInt16();
-                        string filename = new string(br.ReadChars(_stringLength));
-                    }
 
                     foreach (ArchiveFile file in _files)
                     {
@@ -131,7 +133,7 @@ namespace FusionExplorer.Services
                         {
                             UInt16 _stringLength = br.ReadUInt16();
                             string filename = new string(br.ReadChars(_stringLength));
-                            file.Filename = filename;
+                            file.FullPath = filename;
                         }
                     }
                 }
@@ -145,6 +147,54 @@ namespace FusionExplorer.Services
                 return false;
             }
         }
+
+        private bool BuildFileHierarchy()
+        {
+            try
+            {
+                _rootDirectory = new ArchiveDirectory(Path.GetFileName(_currentFilePath));
+
+                Dictionary<string, ArchiveDirectory> directories = new Dictionary<string, ArchiveDirectory>();
+                directories[""] = _rootDirectory;
+
+                foreach (var file in _files)
+                {
+                    if (file.IsFilenameTable)
+                    {
+                        continue;
+                    }
+
+                    if (!string.IsNullOrEmpty(file.DirectoryPath) && !directories.ContainsKey(file.DirectoryPath))
+                    {
+                        string[] parts = file.DirectoryPath.Split('/');
+                        string currentPath = "";
+
+                        foreach (string part in parts)
+                        {
+                            string parentPath = currentPath;
+                            currentPath = string.IsNullOrEmpty(currentPath) ? part : $"{currentPath}/{part}";
+
+                            if(!directories.ContainsKey(currentPath))
+                            {
+                                var newDir = new ArchiveDirectory(currentPath);
+                                directories[parentPath].AddChild(newDir);
+                                directories[currentPath] = newDir;
+                            }
+                        }
+                    }
+
+                    directories[file.DirectoryPath].AddChild(file);
+                }
+                return true;
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show($"Failed to build file hierarchy: {ex.Message}");
+                return false;
+            }
+        }
+
+        public ArchiveDirectory GetRootDirectory() => _rootDirectory;
 
         public byte[] ExtractFile(ArchiveFile file)
         {
@@ -161,7 +211,7 @@ namespace FusionExplorer.Services
                 {
                     reader.BaseStream.Seek(file.ArchiveFileEntry.OffsetToData, SeekOrigin.Begin);
 
-                    string directory = $"{AppDomain.CurrentDomain.BaseDirectory}Extracted Files/{Path.GetFileName(_currentFilePath)}/{file.FileDirectory}";
+                    string directory = $"{AppDomain.CurrentDomain.BaseDirectory}Extracted Files/{Path.GetFileName(_currentFilePath)}/{file.DirectoryPath}";
 
                     if (!Directory.Exists(directory))
                     {

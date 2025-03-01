@@ -15,6 +15,8 @@ using Ionic.Zlib;
 using Ookii.Dialogs.WinForms;
 using System.Globalization;
 using FusionExplorer.src;
+using FusionExplorer.Services;
+using FusionExplorer.Models;
 
 namespace FusionExplorer 
 {
@@ -886,6 +888,72 @@ namespace FusionExplorer
                 if(node != null)
                 {
                     tvDirectoryDisplay.SelectedNode = node;
+                }
+            }
+        }
+
+        ArchiveService service = new ArchiveService();
+
+        private void experimentalOpenToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "pak files (*.pak)|*.pak|All files (*.*)|*.*";
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                /*filename = ofd.FileName;
+                safe_filename = ofd.SafeFileName;
+                pak_data = File.ReadAllBytes(ofd.FileName);
+                parse_header();
+                parse_file_entries();
+                get_file_names();
+                populate_directory_display();
+                toolStripStatusLabel1.Text = filename;
+
+                closeFileToolStripMenuItem.Enabled = true;*/
+
+                service.OpenArchive(ofd.FileName);
+                experimentalPopulateTreeView();
+            }
+        }
+
+        private void experimentalPopulateTreeView()
+        {
+            tvDirectoryDisplay.Nodes.Clear();
+
+            ArchiveDirectory rootDirectory = service.GetRootDirectory();
+
+            if(rootDirectory != null )
+            {
+                TreeNode rootNode = new TreeNode(rootDirectory.Name);
+                rootNode.Tag = rootDirectory;
+                tvDirectoryDisplay.Nodes.Add(rootNode);
+
+                AddChildNodes(rootNode, rootDirectory);
+
+                rootNode.Expand();
+            }
+
+        }
+
+        private void AddChildNodes(TreeNode parentNode, ArchiveDirectory directory)
+        {
+            foreach(IArchiveNode node in directory.Children)
+            {
+                TreeNode childNode = new TreeNode(node.Name);
+                childNode.Tag = node;
+
+                childNode.ImageIndex = node.IsDirectory ? 0 : 1;
+                childNode.SelectedImageIndex = childNode.ImageIndex;
+
+                parentNode.Nodes.Add(childNode);
+
+                if (node.IsDirectory)
+                {
+                    AddChildNodes(childNode, (ArchiveDirectory)node);
+                }
+                else
+                {
+                    childNode.Text = ((Models.ArchiveFile)node).SafeFilename;
                 }
             }
         }
