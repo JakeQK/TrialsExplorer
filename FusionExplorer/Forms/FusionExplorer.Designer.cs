@@ -45,7 +45,6 @@ namespace FusionExplorer {
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.tvDirectoryDisplay = new System.Windows.Forms.TreeView();
             this.DirectoryDisplayImageList = new System.Windows.Forms.ImageList(this.components);
-            this.experimentalOpenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -65,8 +64,7 @@ namespace FusionExplorer {
             this.saveToolStripMenuItem,
             this.closeFileToolStripMenuItem,
             this.toolsToolStripMenuItem,
-            this.btnAbout,
-            this.experimentalOpenToolStripMenuItem});
+            this.btnAbout});
             resources.ApplyResources(this.toolStripDropDownButton1, "toolStripDropDownButton1");
             this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
             this.toolStripDropDownButton1.Text = global::FusionExplorer.Properties.FusionExplorer.DROP_DOWN_BUTTON_FILE;
@@ -180,12 +178,6 @@ namespace FusionExplorer {
             this.DirectoryDisplayImageList.Images.SetKeyName(0, "folder.png");
             this.DirectoryDisplayImageList.Images.SetKeyName(1, "icon.png");
             // 
-            // experimentalOpenToolStripMenuItem
-            // 
-            this.experimentalOpenToolStripMenuItem.Name = "experimentalOpenToolStripMenuItem";
-            resources.ApplyResources(this.experimentalOpenToolStripMenuItem, "experimentalOpenToolStripMenuItem");
-            this.experimentalOpenToolStripMenuItem.Click += new System.EventHandler(this.experimentalOpenToolStripMenuItem_Click);
-            // 
             // FusionExplorer
             // 
             resources.ApplyResources(this, "$this");
@@ -221,7 +213,6 @@ namespace FusionExplorer {
         private System.Windows.Forms.ToolStripMenuItem btnCustomization;
         private System.Windows.Forms.ToolStripMenuItem imageRipperToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
-        private ToolStripMenuItem experimentalOpenToolStripMenuItem;
     }
 }
 

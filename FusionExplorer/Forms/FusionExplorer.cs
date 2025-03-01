@@ -20,7 +20,7 @@ using FusionExplorer.Models;
 
 namespace FusionExplorer 
 {
-    public partial class FusionExplorer : System.Windows.Forms.Form
+    public partial class FusionExplorer : Form
     {
         private static string filename;
         private static string safe_filename;
@@ -36,6 +36,13 @@ namespace FusionExplorer
         ContextMenu folder_contextmenu = new ContextMenu();
 
         bool changesMade = false;
+
+
+
+
+
+
+        private ArchiveService service = new ArchiveService();
 
         public FusionExplorer() {
             InitializeComponent();
@@ -63,15 +70,10 @@ namespace FusionExplorer
             ofd.Filter = "pak files (*.pak)|*.pak|All files (*.*)|*.*";
             if(ofd.ShowDialog() == DialogResult.OK)
             {
-                filename = ofd.FileName;
-                safe_filename = ofd.SafeFileName;
-                pak_data = File.ReadAllBytes(ofd.FileName);
-                parse_header();
-                parse_file_entries();
-                get_file_names();
-                populate_directory_display();
-                toolStripStatusLabel1.Text = filename;
+                service.OpenArchive(ofd.FileName);
+                experimentalPopulateTreeView();
 
+                toolStripStatusLabel1.Text = filename;
                 closeFileToolStripMenuItem.Enabled = true;
             }
         }
@@ -892,29 +894,7 @@ namespace FusionExplorer
             }
         }
 
-        ArchiveService service = new ArchiveService();
-
-        private void experimentalOpenToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "pak files (*.pak)|*.pak|All files (*.*)|*.*";
-            if (ofd.ShowDialog() == DialogResult.OK)
-            {
-                /*filename = ofd.FileName;
-                safe_filename = ofd.SafeFileName;
-                pak_data = File.ReadAllBytes(ofd.FileName);
-                parse_header();
-                parse_file_entries();
-                get_file_names();
-                populate_directory_display();
-                toolStripStatusLabel1.Text = filename;
-
-                closeFileToolStripMenuItem.Enabled = true;*/
-
-                service.OpenArchive(ofd.FileName);
-                experimentalPopulateTreeView();
-            }
-        }
+        
 
         private void experimentalPopulateTreeView()
         {
