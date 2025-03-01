@@ -31,37 +31,21 @@ namespace FusionExplorer
         private static byte[] pak_data;
         private static List<ArchiveFile> archive_files = new List<ArchiveFile>();
 
-        ContextMenu texture_contextmenu = new ContextMenu();
-        ContextMenu item_contextmenu = new ContextMenu();
-        ContextMenu folder_contextmenu = new ContextMenu();
-
         bool changesMade = false;
-
-
-
 
 
 
         private ArchiveService service = new ArchiveService();
 
-        public FusionExplorer() {
+        private ContextMenuStrip fileContextMenu;
+        private ContextMenuStrip directoryContextMenu;
+
+
+
+        public FusionExplorer() 
+        {
             InitializeComponent();
-
-            texture_contextmenu.MenuItems.Add(Properties.FusionExplorer.TEXTURE_CONTEXTMENU_VIEW, new EventHandler(view_texture));
-            texture_contextmenu.MenuItems.Add(Properties.FusionExplorer.TEXTURE_CONTEXTMENU_EXPORT, new EventHandler(export_file));
-            texture_contextmenu.MenuItems.Add(Properties.FusionExplorer.TEXTURE_CONTEXTMENU_EXPORT_DDS, new EventHandler(export_dds));
-            texture_contextmenu.MenuItems.Add(Properties.FusionExplorer.TEXTURE_CONTEXTMENU_IMPORT, new EventHandler(import_file));
-            texture_contextmenu.MenuItems.Add(Properties.FusionExplorer.TEXTURE_CONTEXTMENU_IMPORT_DDS, new EventHandler(import_dds));
-            texture_contextmenu.MenuItems.Add(Properties.FusionExplorer.TEXTURE_CONTEXTMENU_INFO, new EventHandler(get_file_info));
-            texture_contextmenu.MenuItems.Add(Properties.FusionExplorer.TEXTURE_CONTEXTMENU_HXD, new EventHandler(open_with_hxd));
-            item_contextmenu.MenuItems.Add(Properties.FusionExplorer.ITEM_CONTEXTMENU_EXPORT, new EventHandler(export_file));
-            item_contextmenu.MenuItems.Add(Properties.FusionExplorer.ITEM_CONTEXTMENU_IMPORT, new EventHandler(import_file));
-            item_contextmenu.MenuItems.Add(Properties.FusionExplorer.ITEM_CONTEXTMENU_INFO, new EventHandler(get_file_info));
-            item_contextmenu.MenuItems.Add(Properties.FusionExplorer.ITEM_CONTEXTMENU_HXD, new EventHandler(open_with_hxd));
-
-            folder_contextmenu.MenuItems.Add(Properties.FusionExplorer.FOLDER_CONTEXTMENU_EXPORT, new EventHandler(export_folder));
-            folder_contextmenu.MenuItems.Add("Add new file", new EventHandler(add_new_file));
-            folder_contextmenu.MenuItems.Add("Add new DDS", new EventHandler(add_new_dds));
+            SetupContextMenus();
         }
 
         private void btnOpenFile_Click(object sender, EventArgs e)
@@ -77,6 +61,83 @@ namespace FusionExplorer
                 closeFileToolStripMenuItem.Enabled = true;
             }
         }
+
+        private void experimentalPopulateTreeView()
+        {
+            tvDirectoryDisplay.Nodes.Clear();
+
+            ArchiveDirectory rootDirectory = service.GetRootDirectory();
+
+            if (rootDirectory != null)
+            {
+                TreeNode rootNode = new TreeNode(rootDirectory.Name);
+                rootNode.Tag = rootDirectory;
+                tvDirectoryDisplay.Nodes.Add(rootNode);
+
+                AddChildNodes(rootNode, rootDirectory);
+
+                rootNode.Expand();
+            }
+
+            tvDirectoryDisplay.TreeViewNodeSorter = new NodeSorter();
+
+        }
+
+        private void AddChildNodes(TreeNode parentNode, ArchiveDirectory directory)
+        {
+            foreach (IArchiveNode node in directory.Children)
+            {
+                TreeNode childNode = new TreeNode(node.Name);
+                childNode.Tag = node;
+
+                if (node.IsDirectory)
+                {
+                    childNode.ImageIndex = 0;
+                    childNode.SelectedImageIndex = 0;
+
+                    AddChildNodes(childNode, (ArchiveDirectory)node);
+
+
+                }
+                else
+                {
+                    var fileNode = (Models.ArchiveFile)node;
+                    childNode.ImageIndex = fileNode.GetImageIndex();
+                    childNode.SelectedImageIndex = childNode.ImageIndex;
+
+                    childNode.Text = fileNode.SafeFilename;
+                }
+
+                parentNode.Nodes.Add(childNode);
+            }
+        }
+
+        private void SetupContextMenus()
+        {
+            fileContextMenu = new ContextMenuStrip();
+            fileContextMenu.Items.Add("Extract File", null, ExtractFile_Click);
+
+            directoryContextMenu = new ContextMenuStrip();
+            directoryContextMenu.Items.Add("Extract Directory", null, ExtractDirectory_Click);
+
+        }
+
+        private void ExtractFile_Click(object sender, EventArgs e)
+        {
+            if (tvDirectoryDisplay.SelectedNode?.Tag is Models.ArchiveFile file)
+            {
+                service.ExtractFileToExtractsFolder(file);
+            }
+        }
+
+        private void ExtractDirectory_Click(object sender, EventArgs e)
+        {
+
+        }
+
+
+
+
 
         /* Export File
          * Exports individual files from archive to exports folder
@@ -747,66 +808,23 @@ namespace FusionExplorer
             form.Show();
         }
 
-        private void tvDirectoryDisplay_MouseDown(object sender, MouseEventArgs e)
+        private void tvDirectoryDisplay_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
             {
-                TreeNode node = tvDirectoryDisplay.GetNodeAt(e.X, e.Y);
+                tvDirectoryDisplay.SelectedNode = e.Node;
 
-                if(node != null)
+                if (e.Node.Tag is IArchiveNode node)
                 {
-                    tvDirectoryDisplay.SelectedNode = node;
+                    if (node.IsDirectory)
+                    {
+                        directoryContextMenu.Show(tvDirectoryDisplay, e.Location);
+                    }
+                    else
+                    {
+                        fileContextMenu.Show(tvDirectoryDisplay, e.Location);
+                    }
                 }
-            }
-        }
-
-        
-
-        private void experimentalPopulateTreeView()
-        {
-            tvDirectoryDisplay.Nodes.Clear();
-
-            ArchiveDirectory rootDirectory = service.GetRootDirectory();
-
-            if(rootDirectory != null )
-            {
-                TreeNode rootNode = new TreeNode(rootDirectory.Name);
-                rootNode.Tag = rootDirectory;
-                tvDirectoryDisplay.Nodes.Add(rootNode);
-
-                AddChildNodes(rootNode, rootDirectory);
-
-                rootNode.Expand();
-            }
-
-            tvDirectoryDisplay.TreeViewNodeSorter = new NodeSorter();
-
-        }
-
-        private void AddChildNodes(TreeNode parentNode, ArchiveDirectory directory)
-        {
-            foreach(IArchiveNode node in directory.Children)
-            {
-                TreeNode childNode = new TreeNode(node.Name);
-                childNode.Tag = node;
-
-                if (node.IsDirectory)
-                {
-                    childNode.ImageIndex = 0;
-                    childNode.SelectedImageIndex = 0;
-
-                    AddChildNodes(childNode, (ArchiveDirectory)node);
-                }
-                else
-                {
-                    var fileNode = (Models.ArchiveFile)node;
-                    childNode.ImageIndex = fileNode.GetImageIndex();
-                    childNode.SelectedImageIndex = childNode.ImageIndex;
-
-                    childNode.Text = fileNode.SafeFilename;
-                }
-
-                parentNode.Nodes.Add(childNode);
             }
         }
     }

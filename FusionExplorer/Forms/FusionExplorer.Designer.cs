@@ -168,8 +168,8 @@ namespace FusionExplorer {
             resources.ApplyResources(this.tvDirectoryDisplay, "tvDirectoryDisplay");
             this.tvDirectoryDisplay.ImageList = this.DirectoryDisplayImageList;
             this.tvDirectoryDisplay.Name = "tvDirectoryDisplay";
+            this.tvDirectoryDisplay.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.tvDirectoryDisplay_NodeMouseClick);
             this.tvDirectoryDisplay.DoubleClick += new System.EventHandler(this.tvDirectoryDisplay_DoubleClick);
-            this.tvDirectoryDisplay.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tvDirectoryDisplay_MouseDown);
             // 
             // DirectoryDisplayImageList
             // 
