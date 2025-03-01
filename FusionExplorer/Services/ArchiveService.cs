@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.WindowsAPICodePack.Dialogs;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace FusionExplorer.Services
 {
@@ -17,18 +19,16 @@ namespace FusionExplorer.Services
         private ArchiveHeader _header;
         private List<ArchiveFile> _files;
         private bool _isDirty = false;
-
         private ArchiveDirectory _rootDirectory;
-
-        public event EventHandler ArchiveOpened;
-        public event EventHandler ArchiveSaved;
 
         public bool IsArchiveLoaded => _archiveData != null;
         public string CurrentFilePath => _currentFilePath;
         public bool IsDirty => _isDirty;
         public IReadOnlyList<ArchiveFile> Files => _files?.AsReadOnly();
         public ArchiveHeader Header => _header;
+        public ArchiveDirectory GetRootDirectory() => _rootDirectory;
 
+        #region Core Operations
         public bool OpenArchive(string filePath)
         {
             try
@@ -200,9 +200,9 @@ namespace FusionExplorer.Services
                 return false;
             }
         }
+        #endregion
 
-        public ArchiveDirectory GetRootDirectory() => _rootDirectory;
-
+        #region File Operations
         public byte[] ExtractFile(ArchiveFile file)
         {
             if (!IsArchiveLoaded || file == null)
@@ -332,7 +332,9 @@ namespace FusionExplorer.Services
                 MessageBox.Show($"Failed to extract file: {ex.Message}");
             }
         }
+        #endregion
 
+        #region Directory Operations
         public void QuickExtractDirectory(ArchiveDirectory directory)
         {
             try
@@ -381,6 +383,93 @@ namespace FusionExplorer.Services
                 MessageBox.Show($"Failed to extract directory {directory.FullPath}: {ex.Message}");
             }
         }
+
+        public void ExtractDirectoryToSelectedPath(ArchiveDirectory directory)
+        {
+            try
+            {
+                // Show folder browser dialog to select destination
+                using (CommonOpenFileDialog folderDialog = new CommonOpenFileDialog())
+                {
+                    folderDialog.Title = $"Select destination folder for extracting '{directory.Name}'";
+                    folderDialog.IsFolderPicker = true;
+                    folderDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                    folderDialog.DefaultDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                    folderDialog.AddToMostRecentlyUsedList = false;
+                    folderDialog.AllowNonFileSystemItems = false;
+                    folderDialog.EnsureFileExists = true;
+                    folderDialog.EnsurePathExists = true;
+                    folderDialog.EnsureReadOnly = false;
+                    folderDialog.EnsureValidNames = true;
+                    folderDialog.Multiselect = false;
+                    folderDialog.ShowPlacesList = true;
+
+                    // Show dialog and check if user selected a folder
+                    if (folderDialog.ShowDialog() == CommonFileDialogResult.Ok)
+                    {
+                        string selectedPath = folderDialog.FileName;
+
+                        // Create target directory named after the source directory
+                        string targetPath = Path.Combine(selectedPath, directory.Name);
+                        Directory.CreateDirectory(targetPath);
+
+                        // Use helper function to handle all extraction
+                        ExtractDirectoryContents(directory, targetPath);
+
+                        // Optional: Show success message
+                        MessageBox.Show($"Directory '{directory.Name}' extracted successfully to {selectedPath}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to extract directory: {ex.Message}");
+            }
+        }
+
+        // Helper method to recursively extract directory contents
+        private void ExtractDirectoryContents(ArchiveDirectory directory, string targetPath)
+        {
+            foreach (var child in directory.Children)
+            {
+                try
+                {
+                    if (child.IsDirectory)
+                    {
+                        // For subdirectories, create them and extract their contents
+                        ArchiveDirectory subDir = (ArchiveDirectory)child;
+                        string subDirPath = Path.Combine(targetPath, subDir.Name);
+                        Directory.CreateDirectory(subDirPath);
+
+                        // Recursive call to extract contents
+                        ExtractDirectoryContents(subDir, subDirPath);
+                    }
+                    else
+                    {
+                        // Extract individual file
+                        ArchiveFile file = (ArchiveFile)child;
+                        byte[] data = ExtractFile(file);
+
+                        if (data != null)
+                        {
+                            string filePath = Path.Combine(targetPath, file.Name);
+
+                            using (BinaryWriter writer = new BinaryWriter(File.Create(filePath)))
+                            {
+                                writer.Write(data);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Failed to extract {child.Name}: {ex.Message}");
+                }
+            }
+        }
+        #endregion
+
+
 
     }
 }
