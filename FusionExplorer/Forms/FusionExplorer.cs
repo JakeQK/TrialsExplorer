@@ -78,140 +78,6 @@ namespace FusionExplorer
             }
         }
 
-        private void parse_header()
-        {
-            using (MemoryStream ms = new MemoryStream(pak_data))
-            {
-                using (BinaryReader br = new BinaryReader(ms))
-                {
-                    if (br.ReadInt32() == 305419896)
-                    {
-                        data_offset = br.ReadInt32();
-                        file_count = br.ReadInt32();
-                    }
-                }
-            }
-        }
-
-        private void parse_file_entries()
-        {
-            archive_files.Clear();
-            using(MemoryStream ms = new MemoryStream(pak_data))
-            {
-                using(BinaryReader br = new BinaryReader(ms))
-                {
-                    br.BaseStream.Seek(12, SeekOrigin.Begin);
-                    for (int i = 0; i < file_count; i++)
-                    {
-                        ArchiveFile af = new ArchiveFile();
-                        long file_entry_offset = br.BaseStream.Position;
-                        af.fileEntry = new FileEntry(br.ReadInt32(), br.ReadInt32(), br.ReadInt32(), br.ReadByte(), br.ReadInt32(), file_entry_offset);
-                        archive_files.Add(af);
-                    }
-                }
-            }
-        }
-
-        private void get_file_names()
-        {
-            try
-            {
-
-                using (MemoryStream ms = new MemoryStream(pak_data))
-                {
-                    using (BinaryReader br = new BinaryReader(ms))
-                    {
-                        for(int i = file_count - 1; i != 0; i--)
-                        {
-                            if (archive_files[i].fileEntry.ID == -576875544)
-                            {
-                                archive_files[i].filename = "filenames";
-                                br.BaseStream.Seek(archive_files[i].fileEntry.dataOffset, SeekOrigin.Begin);
-                                br.ReadInt32();
-                                for (int j = 0; j < file_count; j++)
-                                {
-                                    if (archive_files[j].fileEntry.ID != -576875544)
-                                    { 
-                                        Int16 strlen = br.ReadInt16();
-                                        string str = new string(br.ReadChars(strlen));
-                                        archive_files[j].filename = str;
-                                    }
-                                }
-                                break;
-                            }
-                        }
-                    }
-                }
-            } 
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        private void populate_directory_display()
-        {
-            tvDirectoryDisplay.Nodes.Clear();
-
-            TreeNode root = new TreeNode(safe_filename);
-            root.ContextMenu = folder_contextmenu;
-
-            TreeNode current_node = root;
-            for(int i = 0; i < archive_files.Count; i++)
-            {
-                if (archive_files[i].fileEntry.ID != -576875544)
-                {
-                    string[] path_split = archive_files[i].filename.Split('/').ToArray();
-                    current_node = root;
-
-                    foreach (string split in path_split)
-                    {
-                        bool found = false;
-                        // looks if node exists 
-                        foreach (TreeNode node in current_node.Nodes)
-                        {
-                            if (node.Text == split)
-                            {
-                                found = true;
-                                current_node = node;
-                                break;
-                            }
-                        }
-
-                        // if node wasn't found, creates it
-                        if (!found)
-                        {
-                            TreeNode node = new TreeNode(split);
-                            if (split.Contains('.'))
-                            {
-                                //node.Text += archive_files[i].file_entry.Compression_Flag.ToString();
-                                node.ImageIndex = 1;
-                                node.SelectedImageIndex = 1;
-                                if (split.Contains("png.tex"))
-                                    node.ContextMenu = texture_contextmenu;
-                                else
-                                    node.ContextMenu = item_contextmenu;
-                                archive_files[i].tree_node = node;
-                            }
-                            else
-                            {
-                                node.ContextMenu = folder_contextmenu;
-                            }
-                            current_node.Nodes.Add(node);
-                            current_node = node;
-                        }
-                    }
-                }
-            }
-
-            tvDirectoryDisplay.Nodes.Add(root);
-            tvDirectoryDisplay.TreeViewNodeSorter = new NodeSorter();
-            tvDirectoryDisplay.Sort();
-        }
-
-        
-
-
         /* Export File
          * Exports individual files from archive to exports folder
          */
@@ -912,6 +778,8 @@ namespace FusionExplorer
 
                 rootNode.Expand();
             }
+
+            tvDirectoryDisplay.TreeViewNodeSorter = new NodeSorter();
 
         }
 
