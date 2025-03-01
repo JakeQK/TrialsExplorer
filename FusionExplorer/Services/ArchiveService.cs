@@ -218,52 +218,37 @@ namespace FusionExplorer.Services
                 {
                     reader.BaseStream.Seek(file.ArchiveFileEntry.OffsetToData, SeekOrigin.Begin);
 
-                    string directory = $"{AppDomain.CurrentDomain.BaseDirectory}Extracted Files/{Path.GetFileName(_currentFilePath)}/{file.DirectoryPath}";
-
-                    if (!Directory.Exists(directory))
+                    switch (file.ArchiveFileEntry.CompressionFlag)
                     {
-                        Directory.CreateDirectory(directory);
-                    }
-
-                    using(BinaryWriter writer = new BinaryWriter(File.Create($"{directory}{file.SafeFilename}")))
-                    {
-                        if (file.ArchiveFileEntry.DecompressedSize > int.MaxValue || file.ArchiveFileEntry.CompressedSize > int.MaxValue)
-                        {
-                            throw new ArgumentOutOfRangeException("File Size", "Byte count exceeds maximum value of an int");
-                        }
-
-                        switch(file.ArchiveFileEntry.CompressionFlag)
-                        {
-                            // Uncompressed
-                            case 0:
-                                return reader.ReadBytes((int)file.ArchiveFileEntry.DecompressedSize);
-                            // zlib Compressed
-                            case 1:
-                                return ZlibStream.UncompressBuffer(reader.ReadBytes((int)file.ArchiveFileEntry.CompressedSize));
-                            // Trials Evolution (Xbox 360) compressed
-                            case 4:
-                                MessageBox.Show("Trials Evolution: Xbox 360 compression unsupported", "Fusion Explorer");
-                                return null;
-                            // Trials Evolution: Gold Edition zlib compressed
-                            case 8:
-                                return ZlibStream.UncompressBuffer(reader.ReadBytes((int)file.ArchiveFileEntry.CompressedSize));
-                            // Unknown Case (Found in data_patch.pak)
-                            case 16:
-                                MessageBox.Show("Unsupported file type", "Currently unable to extract files from data_patch.pak\n\nExtracting raw data...", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                return reader.ReadBytes((int)file.ArchiveFileEntry.CompressedSize);
-                            // Unknown Case (Found in data_patch.pak)
-                            case 17:
-                                MessageBox.Show("Unsupported file type", "Currently unable to extract files from data_patch.pak\n\nExtracting raw data...", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                return reader.ReadBytes((int)file.ArchiveFileEntry.CompressedSize);
-                            // Unknown Case (Found in Trials Rising)
-                            case 32:
-                                MessageBox.Show("Unsupported file type", "Currently unable to extract files from data_patch.pak\n\nExtracting raw data...", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                return reader.ReadBytes((int)file.ArchiveFileEntry.CompressedSize);
-                            // Unknown Case (Found in Trials Rising)
-                            case 33:
-                                MessageBox.Show("Unsupported file type", "Currently unable to extract files from data_patch.pak\n\nExtracting raw data...", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                return reader.ReadBytes((int)file.ArchiveFileEntry.CompressedSize);
-                        }
+                        // Uncompressed
+                        case 0:
+                            return reader.ReadBytes((int)file.ArchiveFileEntry.DecompressedSize);
+                        // zlib Compressed
+                        case 1:
+                            return ZlibStream.UncompressBuffer(reader.ReadBytes((int)file.ArchiveFileEntry.CompressedSize));
+                        // Trials Evolution (Xbox 360) compressed
+                        case 4:
+                            MessageBox.Show("Trials Evolution: Xbox 360 compression unsupported", "Fusion Explorer");
+                            return null;
+                        // Trials Evolution: Gold Edition zlib compressed
+                        case 8:
+                            return ZlibStream.UncompressBuffer(reader.ReadBytes((int)file.ArchiveFileEntry.CompressedSize));
+                        // Unknown Case (Found in data_patch.pak)
+                        case 16:
+                            MessageBox.Show("Unsupported file type", "Currently unable to extract files from data_patch.pak\n\nExtracting raw data...", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return reader.ReadBytes((int)file.ArchiveFileEntry.CompressedSize);
+                        // Unknown Case (Found in data_patch.pak)
+                        case 17:
+                            MessageBox.Show("Unsupported file type", "Currently unable to extract files from data_patch.pak\n\nExtracting raw data...", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return reader.ReadBytes((int)file.ArchiveFileEntry.CompressedSize);
+                        // Unknown Case (Found in Trials Rising)
+                        case 32:
+                            MessageBox.Show("Unsupported file type", "Currently unable to extract files from data_patch.pak\n\nExtracting raw data...", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return reader.ReadBytes((int)file.ArchiveFileEntry.CompressedSize);
+                        // Unknown Case (Found in Trials Rising)
+                        case 33:
+                            MessageBox.Show("Unsupported file type", "Currently unable to extract files from data_patch.pak\n\nExtracting raw data...", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return reader.ReadBytes((int)file.ArchiveFileEntry.CompressedSize);
                     }
                 }
                 return null;
@@ -281,19 +266,19 @@ namespace FusionExplorer.Services
             try
             {
                 byte[] data = ExtractFile(file);
+
                 if (data != null)
                 {
-
                     string fullPath = Path.Combine(Application.StartupPath, Path.GetFileName(_currentFilePath), file.DirectoryPath);
 
                     Directory.CreateDirectory(fullPath);
 
                     string filePath = Path.Combine(fullPath, file.Name);
 
-                    File.Create(filePath).Close();
-
-                    File.WriteAllBytes(filePath, data);
-                    
+                    using (BinaryWriter writer = new BinaryWriter(File.Create(filePath)))
+                    {
+                        writer.Write(data);
+                    }
                 }
             }
             catch (Exception ex)
