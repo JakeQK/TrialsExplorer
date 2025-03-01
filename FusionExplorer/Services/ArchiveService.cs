@@ -288,10 +288,12 @@ namespace FusionExplorer.Services
 
                     Directory.CreateDirectory(fullPath);
 
-                    using (BinaryWriter writer = new BinaryWriter(File.Create(Path.Combine(fullPath, file.Name))))
-                    {
-                        writer.Write(data);
-                    }
+                    string filePath = Path.Combine(fullPath, file.Name);
+
+                    File.Create(filePath).Close();
+
+                    File.WriteAllBytes(filePath, data);
+                    
                 }
             }
             catch (Exception ex)
