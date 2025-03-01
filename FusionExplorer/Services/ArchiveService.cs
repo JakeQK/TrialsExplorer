@@ -164,9 +164,11 @@ namespace FusionExplorer.Services
                         continue;
                     }
 
-                    if (!string.IsNullOrEmpty(file.DirectoryPath) && !directories.ContainsKey(file.DirectoryPath))
+                    string dirPath = file.DirectoryPath?.Replace("\\", "/") ?? "";
+
+                    if (!string.IsNullOrEmpty(dirPath) && !directories.ContainsKey(dirPath))
                     {
-                        string[] parts = file.DirectoryPath.Split('/');
+                        string[] parts = dirPath.Split('/');
                         string currentPath = "";
 
                         foreach (string part in parts)
@@ -183,7 +185,7 @@ namespace FusionExplorer.Services
                         }
                     }
 
-                    directories[file.DirectoryPath].AddChild(file);
+                    directories[dirPath].AddChild(file);
                 }
 
                 foreach(var child in _rootDirectory.Children)
@@ -274,8 +276,28 @@ namespace FusionExplorer.Services
             }
         }
 
+        public void ExtractFileToExtractsFolder(ArchiveFile file)
+        {
+            try
+            {
+                byte[] data = ExtractFile(file);
+                if (data != null)
+                {
 
+                    string fullPath = Path.Combine(Application.StartupPath, Path.GetFileName(_currentFilePath), file.DirectoryPath);
 
+                    Directory.CreateDirectory(fullPath);
 
+                    using (BinaryWriter writer = new BinaryWriter(File.Create(Path.Combine(fullPath, file.Name))))
+                    {
+                        writer.Write(data);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to extract file to extracts folder: {ex.Message}");
+            }
+        }
     }
 }
