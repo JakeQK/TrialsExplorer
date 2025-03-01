@@ -11,9 +11,14 @@ namespace FusionExplorer.Models
     {
         public ArchiveFileEntry ArchiveFileEntry { get; set; }
 
-        public string Name => Path.GetFileName(FullPath); 
         public bool IsDirectory => false;
         public string FullPath { get; set; }
+        public string Name => Path.GetFileName(FullPath);
+
+        public string SafeFilename => Name;
+        public string DirectoryPath => Path.GetDirectoryName(FullPath);
+        public bool IsFilenameTable => ArchiveFileEntry.IsFilenameTableEntry();
+        public string Extension => Path.GetExtension(FullPath)?.ToLowerInvariant();
 
         public ArchiveFile()
         {
@@ -26,10 +31,37 @@ namespace FusionExplorer.Models
             FullPath = filename;
         }
 
-        public string SafeFilename => Name;
+        public int GetImageIndex()
+        {
+            if (string.IsNullOrEmpty(Extension))
+            {
+                return 0;
+            }
 
-        public string DirectoryPath => Path.GetDirectoryName(FullPath);
-
-        public bool IsFilenameTable => ArchiveFileEntry.IsFilenameTableEntry();
+            switch (Extension)
+            {
+                case ".xml":
+                case ".gfx":
+                case ".ct":
+                case ".grp":
+                case ".mdl":
+                case ".csv":
+                case ".pose":
+                case ".fsb":
+                case ".lst":
+                case ".trk":
+                case ".txt":
+                case ".dat":
+                case ".hdr":
+                case ".world":
+                case ".game":
+                case ".raw":
+                case ".swf":
+                case ".ogv":
+                case ".tex":
+                default:
+                    return 1;
+            }
+        }
     }
 }

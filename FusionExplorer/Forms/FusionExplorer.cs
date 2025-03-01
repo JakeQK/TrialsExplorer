@@ -942,19 +942,23 @@ namespace FusionExplorer
                 TreeNode childNode = new TreeNode(node.Name);
                 childNode.Tag = node;
 
-                childNode.ImageIndex = node.IsDirectory ? 0 : 1;
-                childNode.SelectedImageIndex = childNode.ImageIndex;
-
-                parentNode.Nodes.Add(childNode);
-
                 if (node.IsDirectory)
                 {
+                    childNode.ImageIndex = 0;
+                    childNode.SelectedImageIndex = 0;
+
                     AddChildNodes(childNode, (ArchiveDirectory)node);
                 }
                 else
                 {
-                    childNode.Text = ((Models.ArchiveFile)node).SafeFilename;
+                    var fileNode = (Models.ArchiveFile)node;
+                    childNode.ImageIndex = fileNode.GetImageIndex();
+                    childNode.SelectedImageIndex = childNode.ImageIndex;
+
+                    childNode.Text = fileNode.SafeFilename;
                 }
+
+                parentNode.Nodes.Add(childNode);
             }
         }
     }

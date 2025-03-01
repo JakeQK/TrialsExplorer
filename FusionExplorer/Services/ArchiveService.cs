@@ -152,7 +152,7 @@ namespace FusionExplorer.Services
         {
             try
             {
-                _rootDirectory = new ArchiveDirectory(Path.GetFileName(_currentFilePath));
+                _rootDirectory = new ArchiveDirectory("");
 
                 Dictionary<string, ArchiveDirectory> directories = new Dictionary<string, ArchiveDirectory>();
                 directories[""] = _rootDirectory;
@@ -184,6 +184,11 @@ namespace FusionExplorer.Services
                     }
 
                     directories[file.DirectoryPath].AddChild(file);
+                }
+
+                foreach(var child in _rootDirectory.Children)
+                {
+                    Console.WriteLine(child.Name);
                 }
                 return true;
             }
