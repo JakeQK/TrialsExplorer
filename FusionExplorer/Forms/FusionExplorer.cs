@@ -143,7 +143,10 @@ namespace FusionExplorer
 
         private void QuickExtractDirectory_Click(object sender, EventArgs e)
         {
-
+            if (tvDirectoryDisplay.SelectedNode?.Tag is Models.ArchiveDirectory directory)
+            {
+                service.QuickExtractDirectory(directory);
+            }
         }
 
         private void ExtractDirectoryToSelectedPath_Click(object sender, EventArgs e)

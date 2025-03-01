@@ -333,9 +333,53 @@ namespace FusionExplorer.Services
             }
         }
 
-        public void ExtractDirectory(ArchiveDirectory directory)
+        public void QuickExtractDirectory(ArchiveDirectory directory)
         {
+            try
+            {
+                // Create the extraction path
+                string rootPath = Path.Combine(Application.StartupPath, "Extracted Files", Path.GetFileName(_currentFilePath), directory.FullPath);
+                Directory.CreateDirectory(rootPath);
 
+                // Process all children
+                foreach (var child in directory.Children)
+                {
+                    try
+                    {
+                        if (child.IsDirectory)
+                        {
+                            // Recursively extract subdirectories
+                            QuickExtractDirectory((ArchiveDirectory)child);
+                        }
+                        else
+                        {
+                            // Extract individual file
+                            ArchiveFile file = (ArchiveFile)child;
+                            byte[] data = ExtractFile(file);
+
+                            if (data != null)
+                            {
+                                string filePath = Path.Combine(rootPath, file.Name);
+
+                                using (BinaryWriter writer = new BinaryWriter(File.Create(filePath)))
+                                {
+                                    writer.Write(data);
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        // Log error but continue with other files
+                        Console.WriteLine($"Failed to extract {child.Name}: {ex.Message}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle directory-level errors
+                MessageBox.Show($"Failed to extract directory {directory.FullPath}: {ex.Message}");
+            }
         }
 
     }
