@@ -10,6 +10,7 @@ namespace FusionExplorer.Models
     public class ArchiveFile : IArchiveNode
     {
         public ArchiveFileEntry ArchiveFileEntry { get; set; }
+        public long ArchiveFileEntryOffset { get; set; }
 
         public bool IsDirectory => false;
         public string FullPath { get; set; }

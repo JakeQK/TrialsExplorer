@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
+using System.Drawing;
+using Microsoft.AspNetCore.Localization;
 
 namespace FusionExplorer.Services
 {
@@ -89,7 +91,8 @@ namespace FusionExplorer.Services
 
                         ArchiveFile file = new ArchiveFile
                         {
-                            ArchiveFileEntry = entry
+                            ArchiveFileEntry = entry,
+                            ArchiveFileEntryOffset = reader.BaseStream.Position - 17
                         };
 
                         _files.Add(file);
@@ -330,6 +333,79 @@ namespace FusionExplorer.Services
             catch (Exception ex)
             {
                 MessageBox.Show($"Failed to extract file: {ex.Message}");
+            }
+        }
+        
+        public bool ReplaceFile(ArchiveFile file, byte[] data)
+        {
+            if (file == null || data == null)
+            {
+                return false;
+            }
+
+            if (!IsArchiveLoaded)
+            {
+                return false;
+            }
+
+            try
+            {
+                ArchiveFileEntry entry = file.ArchiveFileEntry;
+
+                byte[] dataToWrite = data;
+
+                if (entry.IsCompressed)
+                {
+                    dataToWrite = ZlibStream.CompressBuffer(data);
+
+                    // potentially implement other compression/encryption methods once discovered
+                }
+
+                int sizeDifference = dataToWrite.Length - (int)entry.CompressedSize;
+
+                byte[] newArchiveData = new byte[_archiveData.Length + sizeDifference];
+
+                // 1. Copy everythin up to the file entry's size fields
+                Buffer.BlockCopy(_archiveData, 0, newArchiveData, 0, (int)file.ArchiveFileEntryOffset + 4);
+
+                // 2. Update the file entry's size fields
+                BitConverter.GetBytes(dataToWrite.Length).CopyTo(newArchiveData, (int)file.ArchiveFileEntryOffset + 4);
+                BitConverter.GetBytes(data.Length).CopyTo(newArchiveData, (int)file.ArchiveFileEntryOffset + 8);
+
+                // 3. Copy from after the size fields to the data offset
+                int currentPosition = (int)file.ArchiveFileEntryOffset + 12; // 4 + 4 + 4 (ID + two sizes)
+                Buffer.BlockCopy(_archiveData, currentPosition, newArchiveData, currentPosition, (int)entry.OffsetToData - currentPosition);
+
+                // 4. Insert the new file data
+                Buffer.BlockCopy(dataToWrite, 0, newArchiveData, (int)entry.OffsetToData, dataToWrite.Length);
+
+                // 5. Copy the remaining data
+                int sourcePos = (int)(entry.OffsetToData + entry.CompressedSize);
+                int destPos = (int)(entry.OffsetToData + dataToWrite.Length);
+                int remainingLength = _archiveData.Length - sourcePos;
+                Buffer.BlockCopy(_archiveData, sourcePos, newArchiveData, destPos, remainingLength);
+
+                if (sizeDifference != 0)
+                {
+                    foreach (var otherFile in _files)
+                    {
+                        if (otherFile.ArchiveFileEntry.OffsetToData <= entry.OffsetToData)
+                            continue;
+
+                        // Update OffsetToData in memory
+                        otherFile.ArchiveFileEntry.OffsetToData = (uint)((int)otherFile.ArchiveFileEntry.OffsetToData + sizeDifference);
+
+                        int entryOffsetPos = (int)otherFile.ArchiveFileEntryOffset + 9; // 4 + 4 + 4 + 1 (ID, Size, Size, Compression Flag)
+                    }
+                }
+
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to replace file: {ex.Message}");
+                return false;
             }
         }
         #endregion
