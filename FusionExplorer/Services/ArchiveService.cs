@@ -203,6 +203,29 @@ namespace FusionExplorer.Services
                 return false;
             }
         }
+
+        private bool Save()
+        {
+            try
+            {
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"");
+                return false;
+            }
+        }
+
+        public void Close()
+        {
+            _archiveData = null;
+            _currentFilePath = null;
+            _header = null;
+            _files = null;
+            _isDirty = false;
+            _rootDirectory = null;
+        }
         #endregion
 
         #region File Operations
@@ -289,52 +312,6 @@ namespace FusionExplorer.Services
                 MessageBox.Show($"Failed to extract file to extracts folder: {ex.Message}");
             }
         }
-
-        public void ExtractFileToSelectedPath(ArchiveFile file)
-        {
-            try
-            {
-                // Extract the file data
-                byte[] data = ExtractFile(file);
-
-                if (data != null)
-                {
-                    // Create and configure Save File Dialog
-                    using (SaveFileDialog saveDialog = new SaveFileDialog())
-                    {
-                        saveDialog.FileName = file.Name;
-                        saveDialog.Title = "Save Extracted File";
-                        saveDialog.Filter = "All Files (*.*)|*.*";
-                        saveDialog.OverwritePrompt = true;
-
-                        // Show the dialog and get result
-                        if (saveDialog.ShowDialog() == DialogResult.OK)
-                        {
-                            string selectedPath = saveDialog.FileName;
-
-                            // Create directory if it doesn't exist
-                            string directory = Path.GetDirectoryName(selectedPath);
-                            if (!Directory.Exists(directory))
-                            {
-                                Directory.CreateDirectory(directory);
-                            }
-
-                            // Write the file to the selected location
-                            using (BinaryWriter writer = new BinaryWriter(File.Create(selectedPath)))
-                            {
-                                writer.Write(data);
-                            }
-
-                            // MessageBox.Show($"File successfully extracted to: {selectedPath}");
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Failed to extract file: {ex.Message}");
-            }
-        }
         
         public bool ReplaceFile(ArchiveFile file, byte[] data)
         {
@@ -389,16 +366,26 @@ namespace FusionExplorer.Services
                 {
                     foreach (var otherFile in _files)
                     {
+                        // Skip files before ours as their data offsets wouldn't be affected
                         if (otherFile.ArchiveFileEntry.OffsetToData <= entry.OffsetToData)
                             continue;
 
-                        // Update OffsetToData in memory
-                        otherFile.ArchiveFileEntry.OffsetToData = (uint)((int)otherFile.ArchiveFileEntry.OffsetToData + sizeDifference);
+                        // Update the OffsetToData in memory
+                        otherFile.ArchiveFileEntry.OffsetToData += (uint)sizeDifference;
 
-                        int entryOffsetPos = (int)otherFile.ArchiveFileEntryOffset + 9; // 4 + 4 + 4 + 1 (ID, Size, Size, Compression Flag)
+                        // Calculate OffsetToData position in buffer
+                        int OffsetToDataPos = (int)otherFile.ArchiveFileEntryOffset + 9; // 4 + 4 + 4 + 1 (ID, SIZE, SIZE, FLAG)
+
+                        // Copy new OffsetToData value from memory to buffer
+                        BitConverter.GetBytes(otherFile.ArchiveFileEntry.OffsetToData).CopyTo(newArchiveData, OffsetToDataPos);
                     }
                 }
 
+                entry.CompressedSize = (uint)dataToWrite.Length;
+                entry.DecompressedSize = (uint)data.Length;
+
+                _archiveData = newArchiveData;
+                _isDirty = true;
 
                 return true;
             }

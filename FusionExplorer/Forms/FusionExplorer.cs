@@ -17,6 +17,7 @@ using System.Globalization;
 using FusionExplorer.src;
 using FusionExplorer.Services;
 using FusionExplorer.Models;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace FusionExplorer 
 {
@@ -117,6 +118,7 @@ namespace FusionExplorer
             fileContextMenu = new ContextMenuStrip();
             fileContextMenu.Items.Add("Quick extract", null, QuickExtractFile_Click);
             fileContextMenu.Items.Add("Extract to selected path", null, ExtractFileToSelectedPath_Click);
+            fileContextMenu.Items.Add("Replace", null, ReplaceFile_Click);
             fileContextMenu.Items.Add(new ToolStripSeparator());
             fileContextMenu.Items.Add("Properties", null, null);
 
@@ -135,9 +137,50 @@ namespace FusionExplorer
 
         private void ExtractFileToSelectedPath_Click(object sender, EventArgs e)
         {
-            if (tvDirectoryDisplay.SelectedNode?.Tag is Models.ArchiveFile file)
+            try
             {
-                service.ExtractFileToSelectedPath(file);
+                if (tvDirectoryDisplay.SelectedNode?.Tag is Models.ArchiveFile file)
+                {
+                    // Extract the file data
+                    byte[] data = service.ExtractFile(file);
+
+                    if (data != null)
+                    {
+                        // Create and configure Save File Dialog
+                        using (SaveFileDialog saveDialog = new SaveFileDialog())
+                        {
+                            saveDialog.FileName = file.Name;
+                            saveDialog.Title = "Save Extracted File";
+                            saveDialog.Filter = "All Files (*.*)|*.*";
+                            saveDialog.OverwritePrompt = true;
+
+                            // Show the dialog and get result
+                            if (saveDialog.ShowDialog() == DialogResult.OK)
+                            {
+                                string selectedPath = saveDialog.FileName;
+
+                                // Create directory if it doesn't exist
+                                string directory = Path.GetDirectoryName(selectedPath);
+                                if (!Directory.Exists(directory))
+                                {
+                                    Directory.CreateDirectory(directory);
+                                }
+
+                                // Write the file to the selected location
+                                using (BinaryWriter writer = new BinaryWriter(File.Create(selectedPath)))
+                                {
+                                    writer.Write(data);
+                                }
+
+                                // MessageBox.Show($"File successfully extracted to: {selectedPath}");
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to extract file: {ex.Message}");
             }
         }
 
@@ -157,6 +200,46 @@ namespace FusionExplorer
             }
         }
 
+        private void ReplaceFile_Click(object sender, EventArgs e)
+        {
+            if (tvDirectoryDisplay.SelectedNode?.Tag is Models.ArchiveFile file)
+            {
+
+                using (CommonOpenFileDialog fileDialog = new CommonOpenFileDialog())
+                {
+                    fileDialog.Title = $"Select file to replace '{file.Name}'";
+                    fileDialog.IsFolderPicker = false;
+                    fileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                    fileDialog.DefaultDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                    fileDialog.AddToMostRecentlyUsedList = true;
+                    fileDialog.AllowNonFileSystemItems = false;
+                    fileDialog.EnsureFileExists = true;
+                    fileDialog.EnsurePathExists = true;
+                    fileDialog.EnsureReadOnly = false;
+                    fileDialog.EnsureValidNames = true;
+                    fileDialog.Multiselect = false;
+                    fileDialog.ShowPlacesList = true;
+
+                    if(fileDialog.ShowDialog() == CommonFileDialogResult.Ok)
+                    {
+                        byte[] data = File.ReadAllBytes(fileDialog.FileName);
+
+                        bool status = service.ReplaceFile(file, data);
+
+
+                        if (status == true)
+                        {
+                            MessageBox.Show($"Successfully replaced {file.Name} with {fileDialog.FileName}");
+                        }
+                        else
+                        {
+                            MessageBox.Show($"Failed to replace {file.Name} with {fileDialog.FileName}");
+                        }
+                    }
+
+                }
+            }
+        }
 
         /* Import file
          * Replaces the selected file in the Directory Display with a new file selected through a OpenFileDialog
