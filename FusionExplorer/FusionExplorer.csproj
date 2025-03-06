@@ -502,12 +502,6 @@
     </Compile>
     <Compile Include="Services\ArchiveService.cs" />
     <Compile Include="Utils\PAK.cs" />
-    <Compile Include="Forms\PixelArtGenerator.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\PixelArtGenerator.Designer.cs">
-      <DependentUpon>PixelArtGenerator.cs</DependentUpon>
-    </Compile>
     <Compile Include="Utils\DirectBitmap.cs" />
     <Compile Include="Forms\FusionExplorer.cs">
       <SubType>Form</SubType>
@@ -553,9 +547,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ArchiveBuilder.resx">
       <DependentUpon>ArchiveBuilder.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\PixelArtGenerator.resx">
-      <DependentUpon>PixelArtGenerator.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\TextureViewer.resx">
       <DependentUpon>TextureViewer.cs</DependentUpon>
