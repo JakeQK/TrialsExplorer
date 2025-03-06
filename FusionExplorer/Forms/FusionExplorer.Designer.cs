@@ -84,7 +84,7 @@ namespace FusionExplorer {
             // 
             resources.ApplyResources(this.saveToolStripMenuItem, "saveToolStripMenuItem");
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Text = "Save (CTRL + S)";
+            this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // closeFileToolStripMenuItem
