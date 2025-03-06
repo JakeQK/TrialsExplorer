@@ -517,12 +517,6 @@
     </Compile>
     <Compile Include="Utils\GRP.cs" />
     <Compile Include="Utils\Notepad.cs" />
-    <Compile Include="Forms\ArchiveBuilder.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\ArchiveBuilder.Designer.cs">
-      <DependentUpon>ArchiveBuilder.cs</DependentUpon>
-    </Compile>
     <Compile Include="Utils\PakBuilder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -544,9 +538,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FusionExplorer.resx">
       <DependentUpon>FusionExplorer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ArchiveBuilder.resx">
-      <DependentUpon>ArchiveBuilder.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\TextureViewer.resx">
       <DependentUpon>TextureViewer.cs</DependentUpon>
