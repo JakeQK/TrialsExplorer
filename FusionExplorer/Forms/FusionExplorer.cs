@@ -18,11 +18,16 @@ using FusionExplorer.src;
 using FusionExplorer.Services;
 using FusionExplorer.Models;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using Ionic.Zip;
+using static FusionExplorer.Services.ArchiveService;
+using System.Runtime.Hosting;
 
 namespace FusionExplorer 
 {
     public partial class FusionExplorer : Form
     {
+        private string app_version = "V2";
+
         private static string filename;
         private static string safe_filename;
 
@@ -56,6 +61,9 @@ namespace FusionExplorer
         {
             service = new ArchiveService();
             service.DirtyStateChanged += Service_DirtyStateChanged;
+            service.ArchiveLoaded += Service_ArchiveLoaded;
+            service.ArchiveUnloaded += Service_ArchiveUnloaded;
+            service.ArchiveSaved += Service_ArchiveSaved;
         }
 
         private void InitializeContextMenus()
@@ -77,6 +85,42 @@ namespace FusionExplorer
             saveToolStripMenuItem.Enabled = service.IsDirty;
         }
 
+        private void Service_ArchiveLoaded(object sender, EventArgs e)
+        {
+            FusionExplorer.ActiveForm.Text = $"Fusion Explorer | {service.CurrentFilePath}";
+            closeFileToolStripMenuItem.Enabled = service.IsArchiveLoaded;
+        }
+
+        private void Service_ArchiveUnloaded(object sender, EventArgs e)
+        {
+            FusionExplorer.ActiveForm.Text = $"Fusion Explorer";
+            closeFileToolStripMenuItem.Enabled = service.IsArchiveLoaded;
+        }
+
+        private void Service_ArchiveSaved(object sender, EventArgs e)
+        {
+            saveToolStripMenuItem.Enabled = false;
+        }
+
+        private void Service_ExtractionProgressChanged(object sender, ExtractionProgressEventArgs e)
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new Action(() => UpdateProgressUI(e)));
+            }
+            else
+            {
+                UpdateProgressUI(e);
+            }
+        }
+
+        private void UpdateProgressUI(ExtractionProgressEventArgs e)
+        {
+            ProgressBar1.Value = (int)e.ProgressPercentage;
+            StatusLabel1.Text = $"{e.ProcessedFiles} of {e.TotalFiles}";
+            StatusLabel2.Text = $"Current file: {Path.GetFileName(e.CurrentFileName)}";
+        }
+
         private void btnOpenFile_Click(object sender, EventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
@@ -86,7 +130,7 @@ namespace FusionExplorer
                 service.OpenArchive(ofd.FileName);
                 experimentalPopulateTreeView();
 
-                toolStripStatusLabel1.Text = filename;
+                FusionExplorer.ActiveForm.Text = $"Fusion Explorer | {ofd.SafeFileName}";
                 closeFileToolStripMenuItem.Enabled = true;
             }
         }
@@ -198,19 +242,33 @@ namespace FusionExplorer
             }
         }
 
-        private void QuickExtractDirectory_Click(object sender, EventArgs e)
+        private async void QuickExtractDirectory_Click(object sender, EventArgs e)
         {
             if (tvDirectoryDisplay.SelectedNode?.Tag is Models.ArchiveDirectory directory)
             {
-                service.QuickExtractDirectory(directory);
+                ProgressBar1.Value = 0;
+                ProgressBar1.Visible = true;
+
+                service.ExtractionProgress -= Service_ExtractionProgressChanged;
+                service.ExtractionProgress += Service_ExtractionProgressChanged;
+
+                await service.QuickExtractDirectoryAsync(directory);
+
+                ProgressBar1.Visible = false;
+
+                StatusLabel2.Text = "";
+                StatusLabel1.Text = "Extraction completed successfully";
             }
         }
 
-        private void ExtractDirectoryToSelectedPath_Click(object sender, EventArgs e)
+        private async void ExtractDirectoryToSelectedPath_Click(object sender, EventArgs e)
         {
             if (tvDirectoryDisplay.SelectedNode?.Tag is Models.ArchiveDirectory directory)
             {
-                service.ExtractDirectoryToSelectedPath(directory);
+                service.ExtractionProgress -= Service_ExtractionProgressChanged;
+                service.ExtractionProgress += Service_ExtractionProgressChanged;
+
+                await service.ExtractDirectoryToSelectedPathAsync(directory);
             }
         }
 
@@ -263,7 +321,7 @@ namespace FusionExplorer
                     DialogResult res = MessageBox.Show("Are you sure you want to save changes?\n\nChanges made are irreversible, make sure you have a backup.", "Trials Explorer", MessageBoxButtons.OKCancel);
                     if (res == DialogResult.OK)
                     {
-                        if (service.Save())
+                        if (service.SaveArchive())
                         {
                             return true;
                         }
@@ -669,16 +727,10 @@ namespace FusionExplorer
 
         private void closeFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (tvDirectoryDisplay.Nodes.Count > 0)
+            if (service.IsArchiveLoaded)
             {
                 tvDirectoryDisplay.Nodes.Clear();
-                pak_data = null;
-                archive_files.Clear();
-                toolStripStatusLabel1.Text = "";
-
-                saveToolStripMenuItem.Enabled = false;
-                closeFileToolStripMenuItem.Enabled = false;
-                changesMade = false;
+                service.CloseArchive();
             }
         }
 
@@ -769,11 +821,7 @@ namespace FusionExplorer
 
         private void btnAbout_Click(object sender, EventArgs e)
         {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine(Properties.FusionExplorer.ABOUT_TEXT);
-            sb.AppendLine(Properties.FusionExplorer.ABOUT_VERSION);
-            sb.AppendLine(Properties.FusionExplorer.ABOUT_CREATOR);
-            MessageBox.Show(sb.ToString(), Properties.FusionExplorer.ABOUT_TITLE, MessageBoxButtons.OK);
+            MessageBox.Show($"Version: {app_version}\nCreated by: JakeQK (formerly Raon Hook)", "About", MessageBoxButtons.OK);
         }
 
         private void btnCustomization_Click(object sender, EventArgs e)

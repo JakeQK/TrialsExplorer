@@ -6,6 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using System.Windows.Navigation;
+using System.Threading.Tasks;
 
 namespace FusionExplorer.Services
 {
@@ -20,20 +22,17 @@ namespace FusionExplorer.Services
         private ArchiveDirectory _rootDirectory;
         #endregion
 
-        #region Public Variables
-        public bool IsArchiveLoaded => _archiveData != null;
-        public string CurrentFilePath => _currentFilePath;
-        public IReadOnlyList<ArchiveFile> Files => _files?.AsReadOnly();
-        public ArchiveHeader Header => _header;
-        public ArchiveDirectory GetRootDirectory => _rootDirectory;
-        #endregion
-
-        public ArchiveDirectory test()
-        {
-            return _rootDirectory;
-        }
-
         #region Properties
+        public bool IsArchiveLoaded => _archiveData != null;
+
+        public string CurrentFilePath => _currentFilePath;
+
+        public IReadOnlyList<ArchiveFile> Files => _files?.AsReadOnly();
+
+        public ArchiveHeader Header => _header;
+
+        public ArchiveDirectory GetRootDirectory => _rootDirectory;
+
         public bool IsDirty
         {
             get => _isDirty;
@@ -50,9 +49,17 @@ namespace FusionExplorer.Services
         
         #region Events
         public event EventHandler DirtyStateChanged;
+        public event EventHandler<ArchiveLoadedEventArgs> ArchiveLoaded;
+        public event EventHandler ArchiveUnloaded;
+        public event EventHandler ArchiveSaved;
+        public event EventHandler<ExtractionProgressEventArgs> ExtractionProgress;
         #endregion
 
         #region Core Operations
+        /// <summary>
+        /// Opens the archive file
+        /// </summary>
+        /// <param name="filePath">path to the archive.pak file</param>
         public bool OpenArchive(string filePath)
         {
             try
@@ -60,24 +67,72 @@ namespace FusionExplorer.Services
                 _archiveData = File.ReadAllBytes(filePath);
                 _currentFilePath = filePath;
 
-                if (!ParseArchiveStructure())
+                if (!ParseArchiveStructure() || !BuildFileHierarchy())
                 {
+                    OnArchiveLoaded(filePath, false);
                     return false;
                 }
 
-                return BuildFileHierarchy();
+                OnArchiveLoaded(filePath, true);
+                return true;
             }
             catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show($"Error opening archive: {ex.Message}");
+                OnArchiveLoaded(filePath, false);
+                
+                MessageBox.Show($"Error opening archive: {ex.Message}");
                 
                 _archiveData = null;
                 _currentFilePath = null;
+
 
                 return false;
             }
         }
 
+        /// <summary>
+        /// Saves the archive data to file
+        /// </summary>
+        public bool SaveArchive()
+        {
+            try
+            {
+                if (!IsDirty)
+                {
+                    return false;
+                }
+                
+                File.WriteAllBytes(_currentFilePath, _archiveData);
+
+                IsDirty = false;
+
+                OnArchiveSaved();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show($"Failed to save file: {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Closes and resets the current archive, clearing all loaded data and resetting the service to its initial state.
+        /// </summary>
+        public void CloseArchive()
+        {
+            _archiveData = null;
+            _currentFilePath = null;
+            _header = null;
+            _files = null;
+            _rootDirectory = null;
+
+            IsDirty = false;
+
+            OnArchiveUnloaded();
+        }
+        
         private bool ParseArchiveStructure()
         {
             try
@@ -224,38 +279,6 @@ namespace FusionExplorer.Services
                 System.Windows.Forms.MessageBox.Show($"Failed to build file hierarchy: {ex.Message}");
                 return false;
             }
-        }
-
-        public bool Save()
-        {
-            try
-            {
-                if (!_isDirty)
-                {
-                    return false;
-                }
-
-                File.WriteAllBytes(_currentFilePath, _archiveData);
-
-                IsDirty = false;
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                System.Windows.Forms.MessageBox.Show($"Failed to save file: {ex.Message}");
-                return false;
-            }
-        }
-
-        public void Close()
-        {
-            _archiveData = null;
-            _currentFilePath = null;
-            _header = null;
-            _files = null;
-            _isDirty = false;
-            _rootDirectory = null;
         }
         #endregion
 
@@ -429,7 +452,7 @@ namespace FusionExplorer.Services
         #endregion
 
         #region Directory Operations
-        public void QuickExtractDirectory(ArchiveDirectory directory)
+        public async Task QuickExtractDirectoryAsync(ArchiveDirectory directory)
         {
             try
             {
@@ -437,39 +460,9 @@ namespace FusionExplorer.Services
                 string rootPath = Path.Combine(Application.StartupPath, "Extracted Files", Path.GetFileName(_currentFilePath), directory.FullPath);
                 Directory.CreateDirectory(rootPath);
 
-                // Process all children
-                foreach (var child in directory.Children)
-                {
-                    try
-                    {
-                        if (child.IsDirectory)
-                        {
-                            // Recursively extract subdirectories
-                            QuickExtractDirectory((ArchiveDirectory)child);
-                        }
-                        else
-                        {
-                            // Extract individual file
-                            ArchiveFile file = (ArchiveFile)child;
-                            byte[] data = ExtractFile(file);
+                var progress = CreateProgressTracker(directory.TotalFileCount);
 
-                            if (data != null)
-                            {
-                                string filePath = Path.Combine(rootPath, file.Name);
-
-                                using (BinaryWriter writer = new BinaryWriter(File.Create(filePath)))
-                                {
-                                    writer.Write(data);
-                                }
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        // Log error but continue with other files
-                        Console.WriteLine($"Failed to extract {child.Name}: {ex.Message}");
-                    }
-                }
+                await ExtractDirectoryContentsAsync(directory, rootPath, progress);
             }
             catch (Exception ex)
             {
@@ -478,7 +471,7 @@ namespace FusionExplorer.Services
             }
         }
 
-        public void ExtractDirectoryToSelectedPath(ArchiveDirectory directory)
+        public async Task ExtractDirectoryToSelectedPathAsync(ArchiveDirectory directory)
         {
             try
             {
@@ -507,8 +500,10 @@ namespace FusionExplorer.Services
                         string targetPath = Path.Combine(selectedPath, directory.Name);
                         Directory.CreateDirectory(targetPath);
 
+                        var progress = CreateProgressTracker(directory.TotalFileCount);
+
                         // Use helper function to handle all extraction
-                        ExtractDirectoryContents(directory, targetPath);
+                        await ExtractDirectoryContentsAsync(directory, targetPath, progress);
 
                         // Optional: Show success message
                         MessageBox.Show($"Directory '{directory.Name}' extracted successfully to {selectedPath}");
@@ -522,7 +517,7 @@ namespace FusionExplorer.Services
         }
 
         // Helper method to recursively extract directory contents
-        private void ExtractDirectoryContents(ArchiveDirectory directory, string targetPath)
+        private async Task ExtractDirectoryContentsAsync(ArchiveDirectory directory, string targetPath, IProgress<(int processed, string fileName)> progress)
         {
             foreach (var child in directory.Children)
             {
@@ -536,7 +531,7 @@ namespace FusionExplorer.Services
                         Directory.CreateDirectory(subDirPath);
 
                         // Recursive call to extract contents
-                        ExtractDirectoryContents(subDir, subDirPath);
+                        await ExtractDirectoryContentsAsync(subDir, subDirPath, progress);
                     }
                     else
                     {
@@ -548,9 +543,11 @@ namespace FusionExplorer.Services
                         {
                             string filePath = Path.Combine(targetPath, file.Name);
 
-                            using (BinaryWriter writer = new BinaryWriter(File.Create(filePath)))
+                            using (FileStream fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None)) 
                             {
-                                writer.Write(data);
+                                await fileStream.WriteAsync(data, 0, data.Length);
+
+                                progress.Report((1, filePath));
                             }
                         }
                     }
@@ -568,9 +565,91 @@ namespace FusionExplorer.Services
         {
             DirtyStateChanged?.Invoke(this, EventArgs.Empty);
         }
+
+        virtual protected void OnArchiveLoaded(string path, bool successfully)
+        {
+            ArchiveLoaded?.Invoke(this, new ArchiveLoadedEventArgs(path, successfully));
+        }
+
+        virtual protected void OnArchiveUnloaded()
+        {
+            ArchiveUnloaded?.Invoke(this, EventArgs.Empty);
+        }
+
+        virtual protected void OnArchiveSaved()
+        {
+            ArchiveSaved?.Invoke(this, EventArgs.Empty);
+        }
+
+        protected virtual void OnExtractionProgress(int totalFiles, int processedFiles, string currentFileName)
+        {
+            // Thread-safe event invocation
+            EventHandler<ExtractionProgressEventArgs> handler = ExtractionProgress;
+            if (handler != null)
+            {
+                handler(this, new ExtractionProgressEventArgs(totalFiles, processedFiles, currentFileName));
+            }
+        }
         #endregion
 
-        
+        #region Event Args
+        public class ArchiveLoadedEventArgs : EventArgs
+        {
+            public string Path { get; }
+            public bool Successfully { get; }
 
+            public ArchiveLoadedEventArgs(string path, bool successfully)
+            {
+                Path = path;
+                Successfully = successfully;
+            }
+        }
+
+        public class ExtractionProgressEventArgs : EventArgs
+        {
+            // Only expose immutable data
+            public int TotalFiles { get; }
+            public int ProcessedFiles { get; }
+            public double ProgressPercentage { get; }
+            public string CurrentFileName { get; }
+
+            public ExtractionProgressEventArgs(int totalFiles, int processedFiles, string currentFileName)
+            {
+                TotalFiles = totalFiles;
+                ProcessedFiles = processedFiles;
+                ProgressPercentage = totalFiles > 0 ? (double)processedFiles / totalFiles * 100 : 0;
+                CurrentFileName = currentFileName;
+            }
+        }
+        #endregion
+
+        #region Helper Classes
+        private class ExtractionProgressTracker : IProgress<(int processed, string fileName)>
+        {
+            private readonly ArchiveService _service;
+            private readonly int _totalFiles;
+            private int _processedFiles;
+
+            public ExtractionProgressTracker(ArchiveService service, int totalFiles)
+            {
+                _service = service;
+                _totalFiles = totalFiles;
+                _processedFiles = 0;
+            }
+
+            public void Report((int processed, string fileName) value)
+            {
+                _processedFiles += value.processed;
+                _service.OnExtractionProgress(_totalFiles, _processedFiles, value.fileName);
+            }
+        }
+        #endregion
+
+        #region Helper Methods
+        private IProgress<(int processed, string fileName)> CreateProgressTracker(int totalFiles)
+        {
+            return new ExtractionProgressTracker(this, totalFiles);
+        }
+        #endregion
     }
 }

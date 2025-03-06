@@ -42,19 +42,23 @@ namespace FusionExplorer {
             this.imageRipperToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.btnAbout = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.tvDirectoryDisplay = new System.Windows.Forms.TreeView();
             this.DirectoryDisplayImageList = new System.Windows.Forms.ImageList(this.components);
+            this.statusStrip2 = new System.Windows.Forms.StatusStrip();
+            this.StatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.StatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.ProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
             this.statusStrip1.SuspendLayout();
+            this.statusStrip2.SuspendLayout();
             this.SuspendLayout();
             // 
             // statusStrip1
             // 
             resources.ApplyResources(this.statusStrip1, "statusStrip1");
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripDropDownButton1,
-            this.toolStripStatusLabel1});
+            this.toolStripDropDownButton1});
             this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.SizingGrip = false;
             // 
             // toolStripDropDownButton1
             // 
@@ -158,11 +162,6 @@ namespace FusionExplorer {
             this.btnAbout.Text = global::FusionExplorer.Properties.FusionExplorer.FILE_ABOUT;
             this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
             // 
-            // toolStripStatusLabel1
-            // 
-            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            resources.ApplyResources(this.toolStripStatusLabel1, "toolStripStatusLabel1");
-            // 
             // tvDirectoryDisplay
             // 
             resources.ApplyResources(this.tvDirectoryDisplay, "tvDirectoryDisplay");
@@ -178,10 +177,36 @@ namespace FusionExplorer {
             this.DirectoryDisplayImageList.Images.SetKeyName(0, "folder.png");
             this.DirectoryDisplayImageList.Images.SetKeyName(1, "icon.png");
             // 
+            // statusStrip2
+            // 
+            this.statusStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ProgressBar1,
+            this.StatusLabel1,
+            this.StatusLabel2});
+            resources.ApplyResources(this.statusStrip2, "statusStrip2");
+            this.statusStrip2.Name = "statusStrip2";
+            // 
+            // StatusLabel1
+            // 
+            this.StatusLabel1.Name = "StatusLabel1";
+            resources.ApplyResources(this.StatusLabel1, "StatusLabel1");
+            // 
+            // StatusLabel2
+            // 
+            this.StatusLabel2.Name = "StatusLabel2";
+            resources.ApplyResources(this.StatusLabel2, "StatusLabel2");
+            // 
+            // ProgressBar1
+            // 
+            this.ProgressBar1.Name = "ProgressBar1";
+            resources.ApplyResources(this.ProgressBar1, "ProgressBar1");
+            this.ProgressBar1.Step = 1;
+            // 
             // FusionExplorer
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.statusStrip2);
             this.Controls.Add(this.tvDirectoryDisplay);
             this.Controls.Add(this.statusStrip1);
             this.Name = "FusionExplorer";
@@ -189,6 +214,8 @@ namespace FusionExplorer {
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.statusStrip2.ResumeLayout(false);
+            this.statusStrip2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -202,7 +229,6 @@ namespace FusionExplorer {
         private System.Windows.Forms.TreeView tvDirectoryDisplay;
         private System.Windows.Forms.ImageList DirectoryDisplayImageList;
         private System.Windows.Forms.ToolStripMenuItem closeFileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem btnArchiveBuilder;
@@ -213,6 +239,10 @@ namespace FusionExplorer {
         private System.Windows.Forms.ToolStripMenuItem btnCustomization;
         private System.Windows.Forms.ToolStripMenuItem imageRipperToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private StatusStrip statusStrip2;
+        private ToolStripStatusLabel StatusLabel1;
+        private ToolStripStatusLabel StatusLabel2;
+        private ToolStripProgressBar ProgressBar1;
     }
 }
 
