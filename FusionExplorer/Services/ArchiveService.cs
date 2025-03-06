@@ -378,7 +378,7 @@ namespace FusionExplorer.Services
                         otherFile.ArchiveFileEntry.OffsetToData += (uint)sizeDifference;
 
                         // Calculate OffsetToData position in buffer
-                        int OffsetToDataPos = (int)otherFile.ArchiveFileEntryOffset + 9; // 4 + 4 + 4 + 1 (ID, SIZE, SIZE, FLAG)
+                        int OffsetToDataPos = (int)otherFile.ArchiveFileEntryOffset + 13; // 4 + 4 + 4 + 1 (ID, SIZE, SIZE, FLAG)
 
                         // Copy new OffsetToData value from memory to buffer
                         BitConverter.GetBytes(otherFile.ArchiveFileEntry.OffsetToData).CopyTo(newArchiveData, OffsetToDataPos);

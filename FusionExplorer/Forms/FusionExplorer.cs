@@ -204,7 +204,6 @@ namespace FusionExplorer
         {
             if (tvDirectoryDisplay.SelectedNode?.Tag is Models.ArchiveFile file)
             {
-
                 using (CommonOpenFileDialog fileDialog = new CommonOpenFileDialog())
                 {
                     fileDialog.Title = $"Select file to replace '{file.Name}'";
