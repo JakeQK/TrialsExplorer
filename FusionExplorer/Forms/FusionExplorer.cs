@@ -1,26 +1,12 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ionic.Zlib;
-using Ookii.Dialogs.WinForms;
-using System.Globalization;
 using FusionExplorer.src;
 using FusionExplorer.Services;
 using FusionExplorer.Models;
 using Microsoft.WindowsAPICodePack.Dialogs;
-using Ionic.Zip;
 using static FusionExplorer.Services.ArchiveService;
-using System.Runtime.Hosting;
 
 namespace FusionExplorer 
 {
