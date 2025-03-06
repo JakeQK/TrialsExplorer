@@ -11,19 +11,46 @@ namespace FusionExplorer.Services
 {
     public class ArchiveService
     {
+        #region Private Variables
         private byte[] _archiveData;
         private string _currentFilePath;
         private ArchiveHeader _header;
         private List<ArchiveFile> _files;
         private bool _isDirty = false;
         private ArchiveDirectory _rootDirectory;
+        #endregion
 
+        #region Public Variables
         public bool IsArchiveLoaded => _archiveData != null;
         public string CurrentFilePath => _currentFilePath;
-        public bool IsDirty => _isDirty;
         public IReadOnlyList<ArchiveFile> Files => _files?.AsReadOnly();
         public ArchiveHeader Header => _header;
-        public ArchiveDirectory GetRootDirectory() => _rootDirectory;
+        public ArchiveDirectory GetRootDirectory => _rootDirectory;
+        #endregion
+
+        public ArchiveDirectory test()
+        {
+            return _rootDirectory;
+        }
+
+        #region Properties
+        public bool IsDirty
+        {
+            get => _isDirty;
+            private set
+            {
+                if (_isDirty != value)
+                {
+                    _isDirty = value;
+                    OnDirtyStateChanged();
+                }
+            }
+        }
+        #endregion
+        
+        #region Events
+        public event EventHandler DirtyStateChanged;
+        #endregion
 
         #region Core Operations
         public bool OpenArchive(string filePath)
@@ -210,7 +237,7 @@ namespace FusionExplorer.Services
 
                 File.WriteAllBytes(_currentFilePath, _archiveData);
 
-                _isDirty = false;
+                IsDirty = false;
 
                 return true;
             }
@@ -389,7 +416,7 @@ namespace FusionExplorer.Services
                 entry.DecompressedSize = (uint)data.Length;
 
                 _archiveData = newArchiveData;
-                _isDirty = true;
+                IsDirty = true;
 
                 return true;
             }
@@ -536,7 +563,14 @@ namespace FusionExplorer.Services
         }
         #endregion
 
+        #region Event Management
+        virtual protected void OnDirtyStateChanged()
+        {
+            DirtyStateChanged?.Invoke(this, EventArgs.Empty);
+        }
+        #endregion
 
+        
 
     }
 }

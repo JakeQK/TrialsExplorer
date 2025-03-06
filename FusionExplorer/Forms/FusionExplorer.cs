@@ -36,7 +36,7 @@ namespace FusionExplorer
 
 
 
-        private ArchiveService service = new ArchiveService();
+        private ArchiveService service;
 
         private ContextMenuStrip fileContextMenu;
         private ContextMenuStrip directoryContextMenu;
@@ -46,7 +46,35 @@ namespace FusionExplorer
         public FusionExplorer() 
         {
             InitializeComponent();
-            SetupContextMenus();
+
+            InitializeArchiveService();
+
+            InitializeContextMenus();
+        }
+
+        private void InitializeArchiveService()
+        {
+            service = new ArchiveService();
+            service.DirtyStateChanged += Service_DirtyStateChanged;
+        }
+
+        private void InitializeContextMenus()
+        {
+            fileContextMenu = new ContextMenuStrip();
+            fileContextMenu.Items.Add("Quick extract", null, QuickExtractFile_Click);
+            fileContextMenu.Items.Add("Extract to selected path", null, ExtractFileToSelectedPath_Click);
+            fileContextMenu.Items.Add("Replace", null, ReplaceFile_Click);
+            fileContextMenu.Items.Add(new ToolStripSeparator());
+            fileContextMenu.Items.Add("Properties", null, null);
+
+            directoryContextMenu = new ContextMenuStrip();
+            directoryContextMenu.Items.Add("Quick extract directory", null, QuickExtractDirectory_Click);
+            directoryContextMenu.Items.Add("Extract directory to selected path", null, ExtractDirectoryToSelectedPath_Click);
+        }
+
+        private void Service_DirtyStateChanged(object sender, EventArgs e)
+        {
+            saveToolStripMenuItem.Enabled = service.IsDirty;
         }
 
         private void btnOpenFile_Click(object sender, EventArgs e)
@@ -67,7 +95,7 @@ namespace FusionExplorer
         {
             tvDirectoryDisplay.Nodes.Clear();
 
-            ArchiveDirectory rootDirectory = service.GetRootDirectory();
+            ArchiveDirectory rootDirectory = service.GetRootDirectory;
 
             if (rootDirectory != null)
             {
@@ -111,20 +139,6 @@ namespace FusionExplorer
 
                 parentNode.Nodes.Add(childNode);
             }
-        }
-
-        private void SetupContextMenus()
-        {
-            fileContextMenu = new ContextMenuStrip();
-            fileContextMenu.Items.Add("Quick extract", null, QuickExtractFile_Click);
-            fileContextMenu.Items.Add("Extract to selected path", null, ExtractFileToSelectedPath_Click);
-            fileContextMenu.Items.Add("Replace", null, ReplaceFile_Click);
-            fileContextMenu.Items.Add(new ToolStripSeparator());
-            fileContextMenu.Items.Add("Properties", null, null);
-
-            directoryContextMenu = new ContextMenuStrip();
-            directoryContextMenu.Items.Add("Quick extract directory", null, QuickExtractDirectory_Click);
-            directoryContextMenu.Items.Add("Extract directory to selected path", null, ExtractDirectoryToSelectedPath_Click);
         }
 
         private void QuickExtractFile_Click(object sender, EventArgs e)
