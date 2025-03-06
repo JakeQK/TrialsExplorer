@@ -169,12 +169,12 @@ namespace FusionExplorer
                     }
                     else
                     {
-                        MessageBox.Show(Properties.FusionExplorer.FE_TRY_FIND_OBJECT_FAIL_TEXT, Properties.FusionExplorer.FE_TRY_FIND_OBJECT_FAIL_TITLE);
+                        //MessageBox.Show(Properties.FusionExplorer.FE_TRY_FIND_OBJECT_FAIL_TEXT, Properties.FusionExplorer.FE_TRY_FIND_OBJECT_FAIL_TITLE);
                     }
                 }
                 else
                 {
-                    MessageBox.Show(Properties.FusionExplorer.FE_TRY_READ_ID_FAIL);
+                    //MessageBox.Show(Properties.FusionExplorer.FE_TRY_READ_ID_FAIL);
                 }
             }
             catch (Exception ex)
@@ -322,7 +322,7 @@ namespace FusionExplorer
                     File.Create(path);
 
                 File.WriteAllBytes(path, SelectedGRP.BuildGRP());
-                MessageBox.Show(Properties.FusionExplorer.FE_SAVE_DONE);
+                //MessageBox.Show(Properties.FusionExplorer.FE_SAVE_DONE);
             }
             catch(Exception ex)
             {

@@ -71,28 +71,28 @@ namespace FusionExplorer {
             this.btnAbout});
             resources.ApplyResources(this.toolStripDropDownButton1, "toolStripDropDownButton1");
             this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
-            this.toolStripDropDownButton1.Text = global::FusionExplorer.Properties.FusionExplorer.DROP_DOWN_BUTTON_FILE;
+            this.toolStripDropDownButton1.Text = "File";
             // 
             // btnOpenFile
             // 
             this.btnOpenFile.Name = "btnOpenFile";
             resources.ApplyResources(this.btnOpenFile, "btnOpenFile");
-            this.btnOpenFile.Text = global::FusionExplorer.Properties.FusionExplorer.FILE_OPEN;
+            this.btnOpenFile.Text = "Open";
             this.btnOpenFile.Click += new System.EventHandler(this.btnOpenFile_Click);
             // 
             // saveToolStripMenuItem
             // 
             resources.ApplyResources(this.saveToolStripMenuItem, "saveToolStripMenuItem");
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Text = global::FusionExplorer.Properties.FusionExplorer.FILE_SAVE;
-            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
+            this.saveToolStripMenuItem.Text = "Save (CTRL + S)";
+            this.saveToolStripMenuItem.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // closeFileToolStripMenuItem
             // 
             resources.ApplyResources(this.closeFileToolStripMenuItem, "closeFileToolStripMenuItem");
             this.closeFileToolStripMenuItem.Name = "closeFileToolStripMenuItem";
-            this.closeFileToolStripMenuItem.Text = global::FusionExplorer.Properties.FusionExplorer.FILE_CLOSE;
-            this.closeFileToolStripMenuItem.Click += new System.EventHandler(this.closeFileToolStripMenuItem_Click);
+            this.closeFileToolStripMenuItem.Text = "Close";
+            this.closeFileToolStripMenuItem.Click += new System.EventHandler(this.btnClose_Click);
             // 
             // toolsToolStripMenuItem
             // 
@@ -106,41 +106,41 @@ namespace FusionExplorer {
             this.toolStripMenuItem1});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             resources.ApplyResources(this.toolsToolStripMenuItem, "toolsToolStripMenuItem");
-            this.toolsToolStripMenuItem.Text = global::FusionExplorer.Properties.FusionExplorer.FILE_TOOLS;
+            this.toolsToolStripMenuItem.Text = "Tools";
             // 
             // btnArchiveBuilder
             // 
             this.btnArchiveBuilder.Name = "btnArchiveBuilder";
             resources.ApplyResources(this.btnArchiveBuilder, "btnArchiveBuilder");
-            this.btnArchiveBuilder.Text = global::FusionExplorer.Properties.FusionExplorer.FILE_TOOLS_ARCHIVE_BUILDER;
+            this.btnArchiveBuilder.Text = "Archive Builder";
             this.btnArchiveBuilder.Click += new System.EventHandler(this.btnArchiveBuilder_Click);
             // 
             // btnTrackTool
             // 
             this.btnTrackTool.Name = "btnTrackTool";
             resources.ApplyResources(this.btnTrackTool, "btnTrackTool");
-            this.btnTrackTool.Text = global::FusionExplorer.Properties.FusionExplorer.FILE_TOOLS_TRACK_TOOL;
+            this.btnTrackTool.Text = "Track Tool";
             this.btnTrackTool.Click += new System.EventHandler(this.btnTrackTool_Click);
             // 
             // btnOpenObjectCollection
             // 
             this.btnOpenObjectCollection.Name = "btnOpenObjectCollection";
             resources.ApplyResources(this.btnOpenObjectCollection, "btnOpenObjectCollection");
-            this.btnOpenObjectCollection.Text = global::FusionExplorer.Properties.FusionExplorer.FILE_TOOLS_OBJECT_COLLECTION;
+            this.btnOpenObjectCollection.Text = "Open Object Collection";
             this.btnOpenObjectCollection.Click += new System.EventHandler(this.btnOpenObjectCollection_Click);
             // 
             // btnEditorFavouritesTool
             // 
             this.btnEditorFavouritesTool.Name = "btnEditorFavouritesTool";
             resources.ApplyResources(this.btnEditorFavouritesTool, "btnEditorFavouritesTool");
-            this.btnEditorFavouritesTool.Text = global::FusionExplorer.Properties.FusionExplorer.FILE_TOOLS_FAVOURITES_EDITOR;
+            this.btnEditorFavouritesTool.Text = "Editor Favourites Tool";
             this.btnEditorFavouritesTool.Click += new System.EventHandler(this.btnEditorFavouritesTool_Click);
             // 
             // btnCustomization
             // 
             this.btnCustomization.Name = "btnCustomization";
             resources.ApplyResources(this.btnCustomization, "btnCustomization");
-            this.btnCustomization.Text = global::FusionExplorer.Properties.FusionExplorer.FILE_TOOLS_CUSTOMIZATION;
+            this.btnCustomization.Text = "Customization";
             this.btnCustomization.Click += new System.EventHandler(this.btnCustomization_Click);
             // 
             // imageRipperToolStripMenuItem
@@ -159,7 +159,7 @@ namespace FusionExplorer {
             // 
             this.btnAbout.Name = "btnAbout";
             resources.ApplyResources(this.btnAbout, "btnAbout");
-            this.btnAbout.Text = global::FusionExplorer.Properties.FusionExplorer.FILE_ABOUT;
+            this.btnAbout.Text = "About";
             this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
             // 
             // tvDirectoryDisplay
@@ -168,7 +168,7 @@ namespace FusionExplorer {
             this.tvDirectoryDisplay.ImageList = this.DirectoryDisplayImageList;
             this.tvDirectoryDisplay.Name = "tvDirectoryDisplay";
             this.tvDirectoryDisplay.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.tvDirectoryDisplay_NodeMouseClick);
-            this.tvDirectoryDisplay.DoubleClick += new System.EventHandler(this.tvDirectoryDisplay_DoubleClick);
+            this.tvDirectoryDisplay.DoubleClick += new System.EventHandler(this.archiveTreeView_DoubleClick);
             // 
             // DirectoryDisplayImageList
             // 
@@ -210,8 +210,8 @@ namespace FusionExplorer {
             this.Controls.Add(this.tvDirectoryDisplay);
             this.Controls.Add(this.statusStrip1);
             this.Name = "FusionExplorer";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FusionExplorer_FormClosing);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FusionExplorer_KeyDown);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.statusStrip2.ResumeLayout(false);

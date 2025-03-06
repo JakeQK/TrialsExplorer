@@ -125,7 +125,7 @@ namespace FusionExplorer
             this.btnRefreshFavouritesList.Name = "btnRefreshFavouritesList";
             this.btnRefreshFavouritesList.Size = new System.Drawing.Size(168, 23);
             this.btnRefreshFavouritesList.TabIndex = 1;
-            this.btnRefreshFavouritesList.Text = global::FusionExplorer.Properties.FusionExplorer.FE_REFRESH_LIST;
+            this.btnRefreshFavouritesList.Text = "Refresh Favourites List";
             this.btnRefreshFavouritesList.UseVisualStyleBackColor = true;
             this.btnRefreshFavouritesList.Click += new System.EventHandler(this.btnRefreshFavouritesList_Click);
             // 
@@ -135,7 +135,7 @@ namespace FusionExplorer
             this.btnOpenDirectory.Name = "btnOpenDirectory";
             this.btnOpenDirectory.Size = new System.Drawing.Size(99, 23);
             this.btnOpenDirectory.TabIndex = 2;
-            this.btnOpenDirectory.Text = global::FusionExplorer.Properties.FusionExplorer.FE_OPEN_DIRECTORY;
+            this.btnOpenDirectory.Text = "Open Directory";
             this.btnOpenDirectory.UseVisualStyleBackColor = true;
             this.btnOpenDirectory.Click += new System.EventHandler(this.btnOpenDirectory_Click);
             // 
@@ -145,7 +145,7 @@ namespace FusionExplorer
             this.btnDecompress.Name = "btnDecompress";
             this.btnDecompress.Size = new System.Drawing.Size(99, 23);
             this.btnDecompress.TabIndex = 3;
-            this.btnDecompress.Text = global::FusionExplorer.Properties.FusionExplorer.FE_DECOMPRESS;
+            this.btnDecompress.Text = "Decompress";
             this.btnDecompress.UseVisualStyleBackColor = true;
             this.btnDecompress.Click += new System.EventHandler(this.btnDecompress_Click);
             // 
@@ -164,7 +164,7 @@ namespace FusionExplorer
             this.btnSaveDecompressed.Name = "btnSaveDecompressed";
             this.btnSaveDecompressed.Size = new System.Drawing.Size(148, 23);
             this.btnSaveDecompressed.TabIndex = 13;
-            this.btnSaveDecompressed.Text = global::FusionExplorer.Properties.FusionExplorer.FE_SAVE_AS_DECOMPRESSED;
+            this.btnSaveDecompressed.Text = "Save (Decompressed)";
             this.btnSaveDecompressed.UseVisualStyleBackColor = true;
             this.btnSaveDecompressed.Click += new System.EventHandler(this.btnSaveDecompressed_Click);
             // 
@@ -174,7 +174,7 @@ namespace FusionExplorer
             this.btnSaveCompressed.Name = "btnSaveCompressed";
             this.btnSaveCompressed.Size = new System.Drawing.Size(148, 23);
             this.btnSaveCompressed.TabIndex = 15;
-            this.btnSaveCompressed.Text = global::FusionExplorer.Properties.FusionExplorer.FE_SAVE_AS_COMPRESSED;
+            this.btnSaveCompressed.Text = "Save (Compressed)";
             this.btnSaveCompressed.UseVisualStyleBackColor = true;
             this.btnSaveCompressed.Click += new System.EventHandler(this.btnSaveCompressed_Click);
             // 
@@ -184,7 +184,7 @@ namespace FusionExplorer
             this.btnCompressGRP.Name = "btnCompressGRP";
             this.btnCompressGRP.Size = new System.Drawing.Size(99, 23);
             this.btnCompressGRP.TabIndex = 18;
-            this.btnCompressGRP.Text = global::FusionExplorer.Properties.FusionExplorer.FE_COMPRESS_GRP;
+            this.btnCompressGRP.Text = "Compress GRP";
             this.btnCompressGRP.UseVisualStyleBackColor = true;
             this.btnCompressGRP.Click += new System.EventHandler(this.btnCompressGRP_Click);
             // 
@@ -199,7 +199,7 @@ namespace FusionExplorer
             this.btnAddObject.Name = "btnAddObject";
             this.btnAddObject.Size = new System.Drawing.Size(148, 23);
             this.btnAddObject.TabIndex = 28;
-            this.btnAddObject.Text = global::FusionExplorer.Properties.FusionExplorer.FE_ADD_OBJECT;
+            this.btnAddObject.Text = "Add Object";
             this.btnAddObject.UseVisualStyleBackColor = true;
             this.btnAddObject.Click += new System.EventHandler(this.btnAddObject_Click);
             // 
@@ -251,7 +251,7 @@ namespace FusionExplorer
             this.cbFlag9.Name = "cbFlag9";
             this.cbFlag9.Size = new System.Drawing.Size(62, 17);
             this.cbFlag9.TabIndex = 15;
-            this.cbFlag9.Text = global::FusionExplorer.Properties.FusionExplorer.FE_PHYSICS;
+            this.cbFlag9.Text = "Physics";
             this.cbFlag9.UseVisualStyleBackColor = true;
             // 
             // cbFlag10
@@ -271,7 +271,7 @@ namespace FusionExplorer
             this.cbFlag11.Name = "cbFlag11";
             this.cbFlag11.Size = new System.Drawing.Size(121, 17);
             this.cbFlag11.TabIndex = 13;
-            this.cbFlag11.Text = global::FusionExplorer.Properties.FusionExplorer.FE_LOCK_TO_DRIVING_LINE;
+            this.cbFlag11.Text = "Lock to driving line";
             this.cbFlag11.UseVisualStyleBackColor = true;
             // 
             // cbFlag12
@@ -281,7 +281,7 @@ namespace FusionExplorer
             this.cbFlag12.Name = "cbFlag12";
             this.cbFlag12.Size = new System.Drawing.Size(64, 17);
             this.cbFlag12.TabIndex = 12;
-            this.cbFlag12.Text = global::FusionExplorer.Properties.FusionExplorer.FE_INVISIBLE;
+            this.cbFlag12.Text = "Invisible";
             this.cbFlag12.UseVisualStyleBackColor = true;
             // 
             // cbFlag13
@@ -301,7 +301,7 @@ namespace FusionExplorer
             this.cbFlag8.Name = "cbFlag8";
             this.cbFlag8.Size = new System.Drawing.Size(102, 17);
             this.cbFlag8.TabIndex = 7;
-            this.cbFlag8.Text = global::FusionExplorer.Properties.FusionExplorer.FE_DECORATION_ONLY;
+            this.cbFlag8.Text = "Decoration only";
             this.cbFlag8.UseVisualStyleBackColor = true;
             // 
             // cbFlag14
@@ -321,7 +321,7 @@ namespace FusionExplorer
             this.cbFlag7.Name = "cbFlag7";
             this.cbFlag7.Size = new System.Drawing.Size(107, 17);
             this.cbFlag7.TabIndex = 6;
-            this.cbFlag7.Text = global::FusionExplorer.Properties.FusionExplorer.FE_NO_HIT_RESPONSE;
+            this.cbFlag7.Text = "No hit response";
             this.cbFlag7.UseVisualStyleBackColor = true;
             // 
             // cbFlag6
@@ -331,7 +331,7 @@ namespace FusionExplorer
             this.cbFlag6.Name = "cbFlag6";
             this.cbFlag6.Size = new System.Drawing.Size(90, 17);
             this.cbFlag6.TabIndex = 5;
-            this.cbFlag6.Text = global::FusionExplorer.Properties.FusionExplorer.FE_HIT_RESPONSE;
+            this.cbFlag6.Text = "Hit Response";
             this.cbFlag6.UseVisualStyleBackColor = true;
             // 
             // cbFlag15
@@ -341,7 +341,7 @@ namespace FusionExplorer
             this.cbFlag15.Name = "cbFlag15";
             this.cbFlag15.Size = new System.Drawing.Size(131, 17);
             this.cbFlag15.TabIndex = 9;
-            this.cbFlag15.Text = global::FusionExplorer.Properties.FusionExplorer.FE_NO_CONTACAT_RESPONSE;
+            this.cbFlag15.Text = "No contact response";
             this.cbFlag15.UseVisualStyleBackColor = true;
             // 
             // cbFlag5
@@ -351,7 +351,7 @@ namespace FusionExplorer
             this.cbFlag5.Name = "cbFlag5";
             this.cbFlag5.Size = new System.Drawing.Size(78, 17);
             this.cbFlag5.TabIndex = 4;
-            this.cbFlag5.Text = global::FusionExplorer.Properties.FusionExplorer.FE_INITIAL_STATE;
+            this.cbFlag5.Text = "Initial state";
             this.cbFlag5.UseVisualStyleBackColor = true;
             // 
             // cbFlag4
@@ -361,7 +361,7 @@ namespace FusionExplorer
             this.cbFlag4.Name = "cbFlag4";
             this.cbFlag4.Size = new System.Drawing.Size(120, 17);
             this.cbFlag4.TabIndex = 3;
-            this.cbFlag4.Text = global::FusionExplorer.Properties.FusionExplorer.FE_DONT_RESET_POSITION;
+            this.cbFlag4.Text = "Dont reset position";
             this.cbFlag4.UseVisualStyleBackColor = true;
             this.cbFlag4.CheckedChanged += new System.EventHandler(this.cbFlag4_CheckedChanged);
             // 
@@ -372,7 +372,7 @@ namespace FusionExplorer
             this.cbFlag16.Name = "cbFlag16";
             this.cbFlag16.Size = new System.Drawing.Size(81, 17);
             this.cbFlag16.TabIndex = 8;
-            this.cbFlag16.Text = global::FusionExplorer.Properties.FusionExplorer.FE_NO_COLLISION;
+            this.cbFlag16.Text = "No collision";
             this.cbFlag16.UseVisualStyleBackColor = true;
             // 
             // cbFlag3
@@ -382,7 +382,7 @@ namespace FusionExplorer
             this.cbFlag3.Name = "cbFlag3";
             this.cbFlag3.Size = new System.Drawing.Size(80, 17);
             this.cbFlag3.TabIndex = 2;
-            this.cbFlag3.Text = global::FusionExplorer.Properties.FusionExplorer.FE_FAST_OBJECT;
+            this.cbFlag3.Text = "Fast object";
             this.cbFlag3.UseVisualStyleBackColor = true;
             // 
             // cbFlag2
@@ -392,7 +392,7 @@ namespace FusionExplorer
             this.cbFlag2.Name = "cbFlag2";
             this.cbFlag2.Size = new System.Drawing.Size(115, 17);
             this.cbFlag2.TabIndex = 1;
-            this.cbFlag2.Text = global::FusionExplorer.Properties.FusionExplorer.FE_NO_COLLISION_SOUND;
+            this.cbFlag2.Text = "No collision sound";
             this.cbFlag2.UseVisualStyleBackColor = true;
             // 
             // cbFlag1
@@ -402,7 +402,7 @@ namespace FusionExplorer
             this.cbFlag1.Name = "cbFlag1";
             this.cbFlag1.Size = new System.Drawing.Size(122, 17);
             this.cbFlag1.TabIndex = 0;
-            this.cbFlag1.Text = global::FusionExplorer.Properties.FusionExplorer.FE_NON_DEFAULT_PHYSICS;
+            this.cbFlag1.Text = "Non default physics";
             this.cbFlag1.UseVisualStyleBackColor = true;
             // 
             // btnSetProperties
@@ -411,7 +411,7 @@ namespace FusionExplorer
             this.btnSetProperties.Name = "btnSetProperties";
             this.btnSetProperties.Size = new System.Drawing.Size(302, 23);
             this.btnSetProperties.TabIndex = 33;
-            this.btnSetProperties.Text = global::FusionExplorer.Properties.FusionExplorer.FE_SET_PROPERTIES;
+            this.btnSetProperties.Text = "Set properties";
             this.btnSetProperties.UseVisualStyleBackColor = true;
             this.btnSetProperties.Click += new System.EventHandler(this.btnSetSettings_Click);
             // 
@@ -474,7 +474,7 @@ namespace FusionExplorer
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(148, 23);
             this.btnSave.TabIndex = 35;
-            this.btnSave.Text = global::FusionExplorer.Properties.FusionExplorer.FE_SAVE;
+            this.btnSave.Text = "Save";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
@@ -561,7 +561,7 @@ namespace FusionExplorer
             this.btnSecondaryColorPicker.Name = "btnSecondaryColorPicker";
             this.btnSecondaryColorPicker.Size = new System.Drawing.Size(45, 38);
             this.btnSecondaryColorPicker.TabIndex = 11;
-            this.btnSecondaryColorPicker.Text = global::FusionExplorer.Properties.FusionExplorer.FE_COLOR_PICKER;
+            this.btnSecondaryColorPicker.Text = "Color picker";
             this.btnSecondaryColorPicker.UseVisualStyleBackColor = true;
             this.btnSecondaryColorPicker.Click += new System.EventHandler(this.btnSecondaryColorPicker_Click);
             // 
@@ -662,7 +662,7 @@ namespace FusionExplorer
             this.btnPrimaryColorPicker.Name = "btnPrimaryColorPicker";
             this.btnPrimaryColorPicker.Size = new System.Drawing.Size(45, 38);
             this.btnPrimaryColorPicker.TabIndex = 10;
-            this.btnPrimaryColorPicker.Text = global::FusionExplorer.Properties.FusionExplorer.FE_COLOR_PICKER;
+            this.btnPrimaryColorPicker.Text = "Color Picker";
             this.btnPrimaryColorPicker.UseVisualStyleBackColor = true;
             this.btnPrimaryColorPicker.Click += new System.EventHandler(this.btnPrimaryColorPicker_Click);
             // 
@@ -746,7 +746,7 @@ namespace FusionExplorer
             this.btnSetColor.Name = "btnSetColor";
             this.btnSetColor.Size = new System.Drawing.Size(180, 23);
             this.btnSetColor.TabIndex = 2;
-            this.btnSetColor.Text = global::FusionExplorer.Properties.FusionExplorer.FE_SET_COLOR;
+            this.btnSetColor.Text = "Set color";
             this.btnSetColor.UseVisualStyleBackColor = true;
             this.btnSetColor.Click += new System.EventHandler(this.btnSetColor_Click);
             // 

@@ -494,16 +494,6 @@
     <Compile Include="Models\ArchiveHeader.cs" />
     <Compile Include="Models\ArchiveFileEntry.cs" />
     <Compile Include="Models\IArchiveNode.cs" />
-    <Compile Include="Properties\FusionExplorer.Designer.cs">
-      <DependentUpon>FusionExplorer.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Properties\FusionExplorer.ja-JP.Designer.cs">
-      <DependentUpon>FusionExplorer.ja-JP.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -570,14 +560,6 @@
     <Compile Include="Utils\Utility.cs" />
     <EmbeddedResource Include="ImageRipper.resx">
       <DependentUpon>ImageRipper.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\FusionExplorer.ja-JP.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>FusionExplorer.ja-JP.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\FusionExplorer.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>FusionExplorer.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
