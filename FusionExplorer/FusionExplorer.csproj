@@ -484,12 +484,6 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ImageRipper.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ImageRipper.Designer.cs">
-      <DependentUpon>ImageRipper.cs</DependentUpon>
-    </Compile>
     <Compile Include="Models\ArchiveDirectory.cs" />
     <Compile Include="Models\ArchiveFile.cs" />
     <Compile Include="Models\ArchiveHeader.cs" />
@@ -529,9 +523,6 @@
     <Compile Include="Utils\PixelArt.cs" />
     <Compile Include="Utils\Texture.cs" />
     <Compile Include="Utils\Utility.cs" />
-    <EmbeddedResource Include="ImageRipper.resx">
-      <DependentUpon>ImageRipper.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
