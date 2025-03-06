@@ -241,6 +241,36 @@ namespace FusionExplorer
             }
         }
 
+        private bool SaveChanges()
+        {
+            try
+            {
+                if (service.IsDirty & service.IsArchiveLoaded)
+                {
+                    DialogResult res = MessageBox.Show("Are you sure you want to save changes?\n\nChanges made are irreversible, make sure you have a backup.", "Trials Explorer", MessageBoxButtons.OKCancel);
+                    if (res == DialogResult.OK)
+                    {
+                        if (service.Save())
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to save changes: {ex.Message}");
+
+                return false;
+            }
+        }
+
         /* Import file
          * Replaces the selected file in the Directory Display with a new file selected through a OpenFileDialog
          * Recalculates the compressed and uncompressed size for the file entry
@@ -662,19 +692,6 @@ namespace FusionExplorer
                     tvDirectoryDisplay.SelectedNode.Expand();
                 }
             }
-        }
-
-        private bool SaveChanges()
-        {
-            if (changesMade)
-            {
-                File.WriteAllBytes(filename, pak_data);
-                changesMade = false;
-                saveToolStripMenuItem.Enabled = false;
-                toolStripStatusLabel1.Text = "Saved " + filename;
-                return true;
-            }
-            return false;
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)

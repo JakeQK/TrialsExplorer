@@ -4,13 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.WindowsAPICodePack.Dialogs;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
-using System.Drawing;
-using Microsoft.AspNetCore.Localization;
 
 namespace FusionExplorer.Services
 {
@@ -47,7 +42,7 @@ namespace FusionExplorer.Services
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error opening archive: {ex.Message}");
+                System.Windows.Forms.MessageBox.Show($"Error opening archive: {ex.Message}");
                 
                 _archiveData = null;
                 _currentFilePath = null;
@@ -56,7 +51,7 @@ namespace FusionExplorer.Services
             }
         }
 
-        public bool ParseArchiveStructure()
+        private bool ParseArchiveStructure()
         {
             try
             {
@@ -72,7 +67,7 @@ namespace FusionExplorer.Services
 
                     if(!_header.IsValidSignature())
                     {
-                        MessageBox.Show("Invalid file signature");
+                        System.Windows.Forms.MessageBox.Show("Invalid file signature");
                         return false;
                     }
 
@@ -113,7 +108,7 @@ namespace FusionExplorer.Services
             }
             catch (Exception ex )
             {
-                MessageBox.Show($"Failed to parse archive structure: {ex.Message}");
+                System.Windows.Forms.MessageBox.Show($"Failed to parse archive structure: {ex.Message}");
 
                 return false;
             }
@@ -145,7 +140,7 @@ namespace FusionExplorer.Services
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to parse filename table: {ex.Message}");
+                System.Windows.Forms.MessageBox.Show($"Failed to parse filename table: {ex.Message}");
 
                 return false;
             }
@@ -199,20 +194,29 @@ namespace FusionExplorer.Services
             }
             catch(Exception ex)
             {
-                MessageBox.Show($"Failed to build file hierarchy: {ex.Message}");
+                System.Windows.Forms.MessageBox.Show($"Failed to build file hierarchy: {ex.Message}");
                 return false;
             }
         }
 
-        private bool Save()
+        public bool Save()
         {
             try
             {
+                if (!_isDirty)
+                {
+                    return false;
+                }
+
+                File.WriteAllBytes(_currentFilePath, _archiveData);
+
+                _isDirty = false;
+
                 return true;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"");
+                System.Windows.Forms.MessageBox.Show($"Failed to save file: {ex.Message}");
                 return false;
             }
         }
@@ -233,7 +237,7 @@ namespace FusionExplorer.Services
         {
             if (!IsArchiveLoaded || file == null)
             {
-                MessageBox.Show("Archive is not loaded or file is null");
+                System.Windows.Forms.MessageBox.Show("Archive is not loaded or file is null");
                 return null;
             }
 
@@ -309,7 +313,7 @@ namespace FusionExplorer.Services
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to extract file to extracts folder: {ex.Message}");
+                System.Windows.Forms.MessageBox.Show($"Failed to extract file to extracts folder: {ex.Message}");
             }
         }
         
@@ -391,7 +395,7 @@ namespace FusionExplorer.Services
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to replace file: {ex.Message}");
+                System.Windows.Forms.MessageBox.Show($"Failed to replace file: {ex.Message}");
                 return false;
             }
         }
