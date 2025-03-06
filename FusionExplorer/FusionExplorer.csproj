@@ -500,18 +500,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Customization.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Customization.Designer.cs">
-      <DependentUpon>Customization.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\ObjectCollection.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\ObjectCollection.Designer.cs">
-      <DependentUpon>ObjectCollection.cs</DependentUpon>
-    </Compile>
     <Compile Include="Services\ArchiveService.cs" />
     <Compile Include="Utils\PAK.cs" />
     <Compile Include="Forms\PixelArtGenerator.cs">
@@ -544,12 +532,6 @@
     <Compile Include="Utils\PakBuilder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Forms\TrackTool.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\TrackTool.Designer.cs">
-      <DependentUpon>TrackTool.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\TextureViewer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -566,23 +548,14 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Customization.resx">
-      <DependentUpon>Customization.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FusionExplorer.resx">
       <DependentUpon>FusionExplorer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ArchiveBuilder.resx">
       <DependentUpon>ArchiveBuilder.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ObjectCollection.resx">
-      <DependentUpon>ObjectCollection.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\PixelArtGenerator.resx">
       <DependentUpon>PixelArtGenerator.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\TrackTool.resx">
-      <DependentUpon>TrackTool.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\TextureViewer.resx">
       <DependentUpon>TextureViewer.cs</DependentUpon>
