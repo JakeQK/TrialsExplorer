@@ -7,6 +7,8 @@ using FusionExplorer.Services;
 using FusionExplorer.Models;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using static FusionExplorer.Services.ArchiveService;
+using FusionExplorer.Forms;
+using System.Text;
 
 namespace FusionExplorer 
 {
@@ -44,7 +46,7 @@ namespace FusionExplorer
             fileContextMenu.Items.Add("Extract to selected path", null, ExtractFileToSelectedPath_Click);
             fileContextMenu.Items.Add("Replace", null, ReplaceFile_Click);
             fileContextMenu.Items.Add(new ToolStripSeparator());
-            fileContextMenu.Items.Add("Properties", null, null);
+            fileContextMenu.Items.Add("Properties", null, DisplayProperties_Click);
 
             directoryContextMenu = new ContextMenuStrip();
             directoryContextMenu.Items.Add("Quick extract directory", null, QuickExtractDirectory_Click);
@@ -149,7 +151,9 @@ namespace FusionExplorer
                     childNode.ImageIndex = fileNode.GetImageIndex();
                     childNode.SelectedImageIndex = childNode.ImageIndex;
 
-                    childNode.Text = fileNode.SafeFilename;
+                    //childNode.Text = fileNode.SafeFilename;
+
+                    childNode.Text =  $"{fileNode.SafeFilename} {fileNode.ArchiveFileEntry.CompressionFlag}";
                 }
 
                 parentNode.Nodes.Add(childNode);
@@ -313,7 +317,20 @@ namespace FusionExplorer
             }
         }
 
+        private void DisplayProperties_Click(object sender, EventArgs e)
+        {
+            if (tvDirectoryDisplay.SelectedNode?.Tag is Models.ArchiveFile file)
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.AppendLine($"ID: {file.ArchiveFileEntry.Id}");
+                sb.AppendLine($"Compression Flag: {file.ArchiveFileEntry.CompressionFlag}");
+                sb.AppendLine($"Size (Compressed): {file.ArchiveFileEntry.CompressedSize}");
+                sb.AppendLine($"Size (Decompressed): {file.ArchiveFileEntry.DecompressedSize}");
+                sb.AppendLine($"Offset: 0x{file.ArchiveFileEntry.OffsetToData.ToString("X")}");
 
+                MessageBox.Show(sb.ToString());
+            }
+        }
 
         /*private void view_texture(object sender, EventArgs e)
         {
@@ -463,51 +480,15 @@ namespace FusionExplorer
             }
         }
 
-        private void btnArchiveBuilder_Click(object sender, EventArgs e)
-        {
-            ArchiveBuilder form = new ArchiveBuilder();
-            form.Show();
-        }
-
-        private void btnTrackTool_Click(object sender, EventArgs e)
-        {
-            TrackTool tt = new TrackTool(); // lol tt
-            tt.Show();
-        }
-
-        private void btnOpenObjectCollection_Click(object sender, EventArgs e)
-        {
-            ObjectCollection oc = new ObjectCollection();
-            oc.Show();
-        }
-
         private void btnEditorFavouritesTool_Click(object sender, EventArgs e)
         {
-            EditorFavouritesTool eft = new EditorFavouritesTool();
-            eft.Show();
+            EditorFavouritesTool _editorFavouritesTool = new EditorFavouritesTool();
+            _editorFavouritesTool.Show();
         }
 
         private void btnAbout_Click(object sender, EventArgs e)
         {
             MessageBox.Show($"Version: {app_version}\nCreated by: JakeQK (formerly Raon Hook)", "About", MessageBoxButtons.OK);
-        }
-
-        private void btnCustomization_Click(object sender, EventArgs e)
-        {
-            Customization customization = new Customization();
-            customization.Show();
-        }
-
-        private void imageRipperToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ImageRipper form = new ImageRipper();
-            form.Show();
-        }
-
-        private void toolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            PixelArtGenerator form = new PixelArtGenerator();
-            form.Show();
         }
 
         private void tvDirectoryDisplay_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
@@ -528,6 +509,35 @@ namespace FusionExplorer
                     }
                 }
             }
+        }
+
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            if (service.IsArchiveLoaded)
+            {
+                string search = toolStripTextBox1.Text;
+
+                string filename = "";
+
+                foreach (var file in service.Files)
+                {
+                    if (file.ArchiveFileEntry.Id == int.Parse(search))
+                        filename = file.SafeFilename;
+                }
+
+                MessageBox.Show(filename);
+            }
+        }
+
+        private void toolStripTextBox1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void toolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            ItemsEditor _itemsEditor = new ItemsEditor();
+            _itemsEditor.Show();
         }
     }
 }

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using FusionExplorer.Services;
+using FusionExplorer.Models.Math;
+using FusionExplorer.Models.Utility;
 
 namespace FusionExplorer
 {
@@ -25,7 +25,7 @@ namespace FusionExplorer
             byte[] decompressed_GRP = Decompress(compressed_GRP);
             using (MemoryStream ms = new MemoryStream(decompressed_GRP))
             {
-                using (Utility.MyBinaryReader br = new Utility.MyBinaryReader(ms, Utility.MyBinaryReader.Endianness.Big))
+                using (CustomBinaryReader br = new CustomBinaryReader(ms, CustomBinaryReader.Endianness.Big))
                 {
                     beginning_Bytes = br.ReadBytes(0x11);
                     ParseObjectEntries(br);
@@ -41,9 +41,9 @@ namespace FusionExplorer
             }
         }
 
-        private void ParseObjectEntries(Utility.MyBinaryReader br)
+        private void ParseObjectEntries(CustomBinaryReader br)
         {
-            Dictionary<int, string> ObjectInfo = Utility.LoadObjectInfo();
+            Dictionary<int, string> ObjectInfo = LoadObjectInfo();
             data_size = br.ReadInt32();
             short object_Count = br.ReadInt16();
 
@@ -66,7 +66,7 @@ namespace FusionExplorer
             }
         }
 
-        private void ParseObjectTranslations(Utility.MyBinaryReader br)
+        private void ParseObjectTranslations(CustomBinaryReader br)
         {
             for (short i = 0; i < Objects.Count; i++)
             {
@@ -75,7 +75,7 @@ namespace FusionExplorer
             }
         }
 
-        private void ParseObjectColors(Utility.MyBinaryReader br)
+        private void ParseObjectColors(CustomBinaryReader br)
         {
             for (short j = 0; j < color_Count; j++)
             {
@@ -123,9 +123,9 @@ namespace FusionExplorer
 
             using (MemoryStream ms = new MemoryStream(return_data))
             {
-                using (Utility.MyBinaryWriter bw = new Utility.MyBinaryWriter(ms, Utility.MyBinaryWriter.Endianness.Big))
+                using (CustomBinaryWriter bw = new CustomBinaryWriter(ms, CustomBinaryWriter.Endianness.Big))
                 {
-                    bw.Write(beginning_Bytes, Utility.MyBinaryWriter.Endianness.Little);
+                    bw.Write(beginning_Bytes, CustomBinaryWriter.Endianness.Little);
                     bw.Write(BitConverter.GetBytes(data_size));
                     bw.Write(BitConverter.GetBytes((short)Objects.Count));
 
@@ -137,7 +137,7 @@ namespace FusionExplorer
 
                     WriteColors(bw);
 
-                    bw.Write(ending_Bytes, Utility.MyBinaryWriter.Endianness.Little);
+                    bw.Write(ending_Bytes, CustomBinaryWriter.Endianness.Little);
                 }
             }
 
@@ -146,7 +146,7 @@ namespace FusionExplorer
             return Compress(return_data);
         }
 
-        private void WriteEntries(Utility.MyBinaryWriter bw)
+        private void WriteEntries(CustomBinaryWriter bw)
         {
             foreach (Object obj in Objects)
             {
@@ -157,7 +157,7 @@ namespace FusionExplorer
             }
         }
 
-        private void WriteTranslations(Utility.MyBinaryWriter bw)
+        private void WriteTranslations(CustomBinaryWriter bw)
         {
             foreach (Object obj in Objects)
             {
@@ -173,7 +173,7 @@ namespace FusionExplorer
             }
         }
 
-        private void WriteColors(Utility.MyBinaryWriter bw)
+        private void WriteColors(CustomBinaryWriter bw)
         {
             foreach (Object obj in Objects)
             {
@@ -214,7 +214,7 @@ namespace FusionExplorer
             byte[] decompressed_size = BitConverter.GetBytes(data.Length);
 
             SevenZip.CoderPropID[] coderPropIDs = { SevenZip.CoderPropID.DictionarySize, SevenZip.CoderPropID.LitContextBits, SevenZip.CoderPropID.LitPosBits, SevenZip.CoderPropID.PosStateBits };
-            object[] _properties = Utility.LzmaPropertiesFromBytes(properties);
+            object[] _properties = LzmaPropertiesFromBytes(properties);
             SevenZip.Compression.LZMA.Encoder encoder = new SevenZip.Compression.LZMA.Encoder();
             encoder.SetCoderProperties(coderPropIDs, _properties);
 
@@ -369,22 +369,22 @@ namespace FusionExplorer
             public short ToInt16()
             {
                 short return_value = 0;
-                Utility.SetBit(ref return_value, 0, NonDefaultPhysics);
-                Utility.SetBit(ref return_value, 1, NoCollisionSound);
-                Utility.SetBit(ref return_value, 2, FastObject);
-                Utility.SetBit(ref return_value, 3, Invisible);
-                Utility.SetBit(ref return_value, 4, flag_5);
-                Utility.SetBit(ref return_value, 5, flag_6);
-                Utility.SetBit(ref return_value, 6, flag_7);
-                Utility.SetBit(ref return_value, 7, flag_8);
-                Utility.SetBit(ref return_value, 8, Physics);
-                Utility.SetBit(ref return_value, 9, flag_10);
-                Utility.SetBit(ref return_value, 10, LockToDrivingLine);
-                Utility.SetBit(ref return_value, 11, DontResetPosition);
-                Utility.SetBit(ref return_value, 12, flag_13);
-                Utility.SetBit(ref return_value, 13, flag_14);
-                Utility.SetBit(ref return_value, 14, NoContactResponse);
-                Utility.SetBit(ref return_value, 15, NoCollision);
+                SetBit(ref return_value, 0, NonDefaultPhysics);
+                SetBit(ref return_value, 1, NoCollisionSound);
+                SetBit(ref return_value, 2, FastObject);
+                SetBit(ref return_value, 3, Invisible);
+                SetBit(ref return_value, 4, flag_5);
+                SetBit(ref return_value, 5, flag_6);
+                SetBit(ref return_value, 6, flag_7);
+                SetBit(ref return_value, 7, flag_8);
+                SetBit(ref return_value, 8, Physics);
+                SetBit(ref return_value, 9, flag_10);
+                SetBit(ref return_value, 10, LockToDrivingLine);
+                SetBit(ref return_value, 11, DontResetPosition);
+                SetBit(ref return_value, 12, flag_13);
+                SetBit(ref return_value, 13, flag_14);
+                SetBit(ref return_value, 14, NoContactResponse);
+                SetBit(ref return_value, 15, NoCollision);
                 return return_value;
             }
 
@@ -425,6 +425,62 @@ namespace FusionExplorer
             public bool flag_14 { get; set; }
             public bool NoContactResponse { get; set; }
             public bool NoCollision { get; set; }
+        }
+
+        public static object[] LzmaPropertiesFromBytes(byte[] properties)
+        {
+            Int32 lc = properties[0] % 9;
+            Int32 remainder = properties[0] / 9;
+            Int32 lp = remainder % 5;
+            Int32 pb = remainder / 5;
+            Int32 dictionarySize = 0;
+            for (int i = 0; i < 4; i++)
+                dictionarySize += ((Int32)(properties[1 + i])) << (i * 8);
+            return new object[] { dictionarySize, lc, lp, pb };
+        }
+
+        public static Dictionary<int, string> LoadObjectInfo()
+        {
+            Dictionary<int, string> ret = new Dictionary<int, string>();
+            using (FileStream stream = File.Open("Object IDs.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            {
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    while (!reader.EndOfStream)
+                    {
+                        string line = reader.ReadLine();
+                        string[] split = line.Split(',');
+                        int id = int.Parse(split[0]);
+                        ret.Add(id, split[1]);
+                    }
+                }
+            }
+
+            return ret;
+        }
+
+        public static void SetBit(ref byte data, byte bit, bool value)
+        {
+            if (!value)
+                data &= (byte)~(1 << bit);
+            else
+                data |= (byte)(1 << bit);
+        }
+
+        public static void SetBit(ref short data, short bit, bool value)
+        {
+            if (!value)
+                data &= (short)~(1 << bit);
+            else
+                data |= (short)(1 << bit);
+        }
+
+        public static void SetBit(ref int data, int bit, bool value)
+        {
+            if (!value)
+                data &= (int)~(1 << bit);
+            else
+                data |= (int)(1 << bit);
         }
 
 

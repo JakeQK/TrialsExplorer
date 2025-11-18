@@ -57,10 +57,10 @@
     <ApplicationIcon>aup8i-rmim2-001.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>9C999ADCB57B2D1ADF374737F8857B5BBF6F7A64</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>65F16FBBF196EC2BA72F94D461C96DEDEE18FB38</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>FusionExplorer_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>FusionExplorer_2_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -72,7 +72,7 @@
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>FusionExplorer.Program</StartupObject>
@@ -307,7 +307,6 @@
     <Reference Include="System.Console, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Console.4.3.0\lib\net46\System.Console.dll</HintPath>
       <Private>True</Private>
-      <Private>True</Private>
     </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Data.OracleClient" />
@@ -377,14 +376,12 @@
     <Reference Include="System.Runtime, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.4.3.0\lib\net462\System.Runtime.dll</HintPath>
       <Private>True</Private>
-      <Private>True</Private>
     </Reference>
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.Extensions, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.Extensions.4.3.0\lib\net462\System.Runtime.Extensions.dll</HintPath>
-      <Private>True</Private>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Runtime.InteropServices, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -404,7 +401,6 @@
     <Reference Include="System.Security.Cryptography.Algorithms, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Security.Cryptography.Algorithms.4.3.0\lib\net463\System.Security.Cryptography.Algorithms.dll</HintPath>
       <Private>True</Private>
-      <Private>True</Private>
     </Reference>
     <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Security.Cryptography.Encoding.4.3.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
@@ -418,7 +414,6 @@
     </Reference>
     <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Security.Cryptography.X509Certificates.4.3.0\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
-      <Private>True</Private>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Security.Cryptography.Xml, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -463,7 +458,6 @@
     <Reference Include="System.Xml.ReaderWriter, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Xml.ReaderWriter.4.3.0\lib\net46\System.Xml.ReaderWriter.dll</HintPath>
       <Private>True</Private>
-      <Private>True</Private>
     </Reference>
     <Reference Include="System.Xml.XmlDocument, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Xml.XmlDocument.4.3.0\lib\net46\System.Xml.XmlDocument.dll</HintPath>
@@ -484,19 +478,59 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Forms\ItemsEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ItemsEditor.Designer.cs">
+      <DependentUpon>ItemsEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\ArchiveDirectory.cs" />
     <Compile Include="Models\ArchiveFile.cs" />
     <Compile Include="Models\ArchiveHeader.cs" />
     <Compile Include="Models\ArchiveFileEntry.cs" />
+    <Compile Include="Models\Gear\Bike.cs" />
+    <Compile Include="Models\Gear\Default\Bike.cs" />
+    <Compile Include="Models\Gear\Default\DefaultColor.cs" />
+    <Compile Include="Models\Gear\Default\DefaultSet.cs" />
+    <Compile Include="Models\Gear\Default\RiderDefaults.cs" />
+    <Compile Include="Models\Gear\GearData.cs" />
+    <Compile Include="Models\Gear\Group.cs" />
+    <Compile Include="Models\Gear\Item.cs" />
+    <Compile Include="Models\Gear\LocalMP\Bike\Bike.cs" />
+    <Compile Include="Models\Gear\LocalMP\Bike\Set.cs" />
+    <Compile Include="Models\Gear\LocalMP\LocalMP.cs" />
+    <Compile Include="Models\Gear\LocalMP\Rider\Rider.cs" />
+    <Compile Include="Models\Gear\LocalMP\Rider\Set.cs" />
+    <Compile Include="Models\Gear\Rider.cs" />
+    <Compile Include="Models\Gear\Set.cs" />
     <Compile Include="Models\IArchiveNode.cs" />
+    <Compile Include="Models\Math\Vector3.cs" />
+    <Compile Include="Models\Math\Vector4.cs" />
+    <Compile Include="Models\MDL\Face.cs" />
+    <Compile Include="Models\MDL\Lod.cs" />
+    <Compile Include="Models\MDL\LodHeader.cs" />
+    <Compile Include="Models\MDL\MDL.cs" />
+    <Compile Include="Models\MDL\Vertex.cs" />
+    <Compile Include="Models\Utility\RGB.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Services\ArchiveService.cs" />
-    <Compile Include="Utils\PAK.cs" />
-    <Compile Include="Utils\DirectBitmap.cs" />
+    <Compile Include="Services\CustomBinaryReader.cs" />
+    <Compile Include="Services\CustomBinaryWriter.cs" />
+    <Compile Include="Services\ChangeCacheService.cs" />
+    <Compile Include="Services\Gear\BikeDefaultManager.cs" />
+    <Compile Include="Services\Gear\BikeManager.cs" />
+    <Compile Include="Services\Gear\GearService.cs" />
+    <Compile Include="Services\Gear\ItemManager.cs" />
+    <Compile Include="Services\Gear\LocalMPManager.cs" />
+    <Compile Include="Services\Gear\RiderDefaultManager.cs" />
+    <Compile Include="Services\Gear\RiderManager.cs" />
+    <Compile Include="Services\Gear\SetManager.cs" />
+    <Compile Include="Services\MDL\MDLService.cs" />
+    <Compile Include="Utilities\DirectBitmap.cs" />
     <Compile Include="Forms\FusionExplorer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -509,9 +543,7 @@
     <Compile Include="Forms\EditorFavouritesTool.Designer.cs">
       <DependentUpon>EditorFavouritesTool.cs</DependentUpon>
     </Compile>
-    <Compile Include="Utils\GRP.cs" />
-    <Compile Include="Utils\Notepad.cs" />
-    <Compile Include="Utils\PakBuilder.cs" />
+    <Compile Include="Utilities\GRP.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Forms\TextureViewer.cs">
@@ -520,9 +552,13 @@
     <Compile Include="Forms\TextureViewer.Designer.cs">
       <DependentUpon>TextureViewer.cs</DependentUpon>
     </Compile>
-    <Compile Include="Utils\PixelArt.cs" />
-    <Compile Include="Utils\Texture.cs" />
-    <Compile Include="Utils\Utility.cs" />
+    <Compile Include="Services\PixelArtService.cs" />
+    <Compile Include="Utilities\Texture.cs" />
+    <Compile Include="Utilities\Utility.cs" />
+    <Compile Include="Utilities\XmlUtilities.cs" />
+    <EmbeddedResource Include="Forms\ItemsEditor.resx">
+      <DependentUpon>ItemsEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -538,6 +574,7 @@
     </EmbeddedResource>
     <None Include="FusionExplorer.config" />
     <None Include="FusionExplorer_1_TemporaryKey.pfx" />
+    <None Include="FusionExplorer_2_TemporaryKey.pfx" />
     <None Include="FusionExplorer_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
@@ -574,11 +611,11 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

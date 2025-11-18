@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using FusionExplorer.Models.Utility;
 
 namespace FusionExplorer
 {
@@ -89,7 +87,11 @@ namespace FusionExplorer
                 string dir = FavouritesList[lbFavouritesList.SelectedIndex].Directory + "\\";
                 byte[] data = File.ReadAllBytes(dir + "objectgroup.grp");
                 byte[] Decompressed = GRP.Decompress(data);
-                Utility.SaveFile(Decompressed, dir);
+
+                using (BinaryWriter br = new BinaryWriter(File.Create(dir + "decompressed.grp")))
+                {
+                    br.Write(Decompressed);
+                }
             }
             catch(Exception ex)
             {
@@ -105,8 +107,11 @@ namespace FusionExplorer
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
                     byte[] data = GRP.Compress(File.ReadAllBytes(ofd.FileName));
-                    Utility.SaveFile(data, ofd.FileName);
 
+                    using (BinaryWriter br = new BinaryWriter(File.Create(ofd.FileName)))
+                    {
+                        br.Write(data);
+                    }
                 }
             }
             catch(Exception ex)
@@ -119,11 +124,11 @@ namespace FusionExplorer
         {
             try
             {
-                string dir = FavouritesList[lbFavouritesList.SelectedIndex].Directory; /* + "\\"*/
+                string dir = FavouritesList[lbFavouritesList.SelectedIndex].Directory + "\\";
                 Clipboard.SetText(dir);
-                /*byte[] data = File.ReadAllBytes(dir + "objectgroup.grp");
+                byte[] data = File.ReadAllBytes(dir + "objectgroup.grp");
                 SelectedGRP = new GRP(data);
-                UpdateObjectsList();*/
+                UpdateObjectsList();
             }
             catch (Exception ex)
             {
@@ -157,7 +162,7 @@ namespace FusionExplorer
                 int ID = 0;
                 if (int.TryParse(tbObjectID.Text, out ID))
                 {
-                    Dictionary<int, string> Info = Utility.LoadObjectInfo();
+                    Dictionary<int, string> Info = GRP.LoadObjectInfo();
                     string ObjectName = "";
                     if (Info.TryGetValue(ID, out ObjectName))
                     {
@@ -186,13 +191,22 @@ namespace FusionExplorer
         private void btnSaveDecompressed_Click(object sender, EventArgs e)
         {
             byte[] decompressedData = SelectedGRP.BuildGRP(true);
-            Utility.SaveFile(decompressedData);
+            //Utility.SaveFile(decompressedData);
+
+            SaveFileDialog sfd = new SaveFileDialog();
+            if(sfd.ShowDialog() == DialogResult.OK)
+            {
+                using (BinaryWriter br = new BinaryWriter(File.Create(sfd.FileName)))
+                {
+                    br.Write(decompressedData);
+                }
+            }
         }
 
         private void btnSaveCompressed_Click(object sender, EventArgs e)
         {
             byte[] compressedData = SelectedGRP.BuildGRP();
-            Utility.SaveFile(compressedData);
+           // Utility.SaveFile(compressedData);
         }
 
 

@@ -5,11 +5,11 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using FusionExplorer.Models.Math;
 
 namespace FusionExplorer.src.utility
 {
-    public class PixelArt
+    public class PixelArtService
     {
         private PixelArtSize Size;
 
@@ -36,7 +36,7 @@ namespace FusionExplorer.src.utility
         /// </summary>
         /// <param name="path">path to image</param>
         /// <param name="size">determines which prime box is used</param>
-        public PixelArt(string path, PixelArtSize size = PixelArtSize.Small)
+        public PixelArtService(string path, PixelArtSize size = PixelArtSize.Small)
         {
             Bitmap original_image = new Bitmap(path);
             this.Width = original_image.Width;
@@ -52,7 +52,7 @@ namespace FusionExplorer.src.utility
         /// </summary>
         /// <param name="image">image bitmap</param>
         /// <param name="size">determines which prime box is used</param>
-        public PixelArt(Bitmap image, PixelArtSize size = PixelArtSize.Small)
+        public PixelArtService(Bitmap image, PixelArtSize size = PixelArtSize.Small)
         {
             this.g_Originalbitmap = image;
             this.g_image = image;

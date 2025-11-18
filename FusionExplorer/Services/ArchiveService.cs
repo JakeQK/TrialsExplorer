@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Windows.Navigation;
 using System.Threading.Tasks;
+using System.Diagnostics.Eventing.Reader;
 
 namespace FusionExplorer.Services
 {
@@ -308,8 +309,9 @@ namespace FusionExplorer.Services
                             return ZlibStream.UncompressBuffer(reader.ReadBytes((int)file.ArchiveFileEntry.CompressedSize));
                         // Trials Evolution (Xbox 360) compressed
                         case 4:
-                            MessageBox.Show("Trials Evolution: Xbox 360 compression unsupported", "Fusion Explorer");
-                            return null;
+                            return reader.ReadBytes((int)file.ArchiveFileEntry.CompressedSize);
+                            //MessageBox.Show("Trials Evolution: Xbox 360 compression unsupported", "Fusion Explorer");
+                            //return null;
                         // Trials Evolution: Gold Edition zlib compressed
                         case 8:
                             return ZlibStream.UncompressBuffer(reader.ReadBytes((int)file.ArchiveFileEntry.CompressedSize));
@@ -337,6 +339,107 @@ namespace FusionExplorer.Services
             {
                 MessageBox.Show($"Failed to extract file: {ex.Message}");
 
+                return null;
+            }
+        }
+
+        public byte[] ExtractFile(int id)
+        {
+            try
+            {
+                foreach (var file in _files)
+                {
+                    if (file.ArchiveFileEntry.Id == id)
+                    {
+                        return ExtractFile(file);
+                    }
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static byte[] ExtractFile(string path, int id)
+        {
+            try
+            {
+                using (BinaryReader reader = new BinaryReader(File.OpenRead(path)))
+                {
+                    ArchiveHeader _tmpheader = new ArchiveHeader
+                    {
+                        FileSignature = reader.ReadInt32(),
+                        OffsetToData = reader.ReadUInt32(),
+                        FileEntryCount = reader.ReadUInt32()
+                    };
+
+                    if (!_tmpheader.IsValidSignature())
+                    {
+                        return null;
+                    }
+
+                    int nextFileEntryOffset = 13;
+                    for (int i = 0; i < _tmpheader.FileEntryCount; i++)
+                    {
+                        int _tmpId = reader.ReadInt32();
+                        if (_tmpId == id)
+                        {
+                            ArchiveFileEntry entry = new ArchiveFileEntry
+                            {
+                                Id = _tmpId,
+                                CompressedSize = reader.ReadUInt32(),
+                                DecompressedSize = reader.ReadUInt32(),
+                                CompressionFlag = reader.ReadByte(),
+                                OffsetToData = reader.ReadUInt32()
+                            };
+
+                            reader.BaseStream.Seek(entry.OffsetToData, SeekOrigin.Begin);
+
+                            switch (entry.CompressionFlag)
+                            {
+                                // Uncompressed
+                                case 0:
+                                    return reader.ReadBytes((int)entry.DecompressedSize);
+                                // zlib Compressed
+                                case 1:
+                                    return ZlibStream.UncompressBuffer(reader.ReadBytes((int)entry.CompressedSize));
+                                // Trials Evolution (Xbox 360) compressed
+                                case 4:
+                                    MessageBox.Show("Trials Evolution: Xbox 360 compression unsupported", "Fusion Explorer");
+                                    return null;
+                                // Trials Evolution: Gold Edition zlib compressed
+                                case 8:
+                                    return ZlibStream.UncompressBuffer(reader.ReadBytes((int)entry.CompressedSize));
+                                // Unknown Case (Found in data_patch.pak)
+                                case 16:
+                                    MessageBox.Show("Unsupported file type", "Currently unable to extract files from data_patch.pak\n\nExtracting raw data...", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    return reader.ReadBytes((int)entry.CompressedSize);
+                                // Unknown Case (Found in data_patch.pak)
+                                case 17:
+                                    MessageBox.Show("Unsupported file type", "Currently unable to extract files from data_patch.pak\n\nExtracting raw data...", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    return reader.ReadBytes((int)entry.CompressedSize);
+                                // Unknown Case (Found in Trials Rising)
+                                case 32:
+                                    MessageBox.Show("Unsupported file type", "Currently unable to extract files from data_patch.pak\n\nExtracting raw data...", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    return reader.ReadBytes((int)entry.CompressedSize);
+                                // Unknown Case (Found in Trials Rising)
+                                case 33:
+                                    MessageBox.Show("Unsupported file type", "Currently unable to extract files from data_patch.pak\n\nExtracting raw data...", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    return reader.ReadBytes((int)entry.CompressedSize);
+                            }
+                        }
+
+                        reader.BaseStream.Seek(nextFileEntryOffset, SeekOrigin.Current);
+                    }
+
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
                 return null;
             }
         }
@@ -448,6 +551,37 @@ namespace FusionExplorer.Services
                 System.Windows.Forms.MessageBox.Show($"Failed to replace file: {ex.Message}");
                 return false;
             }
+        }
+        
+        public static bool ReplaceFile(string path, int id, byte[] data)
+        {
+            ArchiveService service = new ArchiveService();
+            service.OpenArchive(path);
+
+            ArchiveFile tmpFile = null;
+
+            foreach(var file in service.Files)
+            {
+                if (file.ArchiveFileEntry.Id == id)
+                {
+                    tmpFile = file;
+                    break;
+                }
+            }
+
+            if(tmpFile != null)
+            {
+                if (service.ReplaceFile(tmpFile, data))
+                {
+                    service.CloseArchive();
+
+                    return true;
+                }
+            }
+
+            service.CloseArchive();
+
+            return false;
         }
         #endregion
 

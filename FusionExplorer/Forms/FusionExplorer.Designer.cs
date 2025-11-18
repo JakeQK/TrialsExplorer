@@ -34,20 +34,19 @@ namespace FusionExplorer {
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.btnArchiveBuilder = new System.Windows.Forms.ToolStripMenuItem();
-            this.btnTrackTool = new System.Windows.Forms.ToolStripMenuItem();
-            this.btnOpenObjectCollection = new System.Windows.Forms.ToolStripMenuItem();
             this.btnEditorFavouritesTool = new System.Windows.Forms.ToolStripMenuItem();
-            this.btnCustomization = new System.Windows.Forms.ToolStripMenuItem();
-            this.imageRipperToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.btnAbout = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripDropDownButton2 = new System.Windows.Forms.ToolStripDropDownButton();
+            this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.tvDirectoryDisplay = new System.Windows.Forms.TreeView();
             this.DirectoryDisplayImageList = new System.Windows.Forms.ImageList(this.components);
             this.statusStrip2 = new System.Windows.Forms.StatusStrip();
+            this.ProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
             this.StatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.StatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.ProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
+            this.mDLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1.SuspendLayout();
             this.statusStrip2.SuspendLayout();
             this.SuspendLayout();
@@ -56,7 +55,8 @@ namespace FusionExplorer {
             // 
             resources.ApplyResources(this.statusStrip1, "statusStrip1");
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripDropDownButton1});
+            this.toolStripDropDownButton1,
+            this.toolStripDropDownButton2});
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.SizingGrip = false;
             // 
@@ -71,96 +71,72 @@ namespace FusionExplorer {
             this.btnAbout});
             resources.ApplyResources(this.toolStripDropDownButton1, "toolStripDropDownButton1");
             this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
-            this.toolStripDropDownButton1.Text = "File";
             // 
             // btnOpenFile
             // 
             this.btnOpenFile.Name = "btnOpenFile";
             resources.ApplyResources(this.btnOpenFile, "btnOpenFile");
-            this.btnOpenFile.Text = "Open";
             this.btnOpenFile.Click += new System.EventHandler(this.btnOpenFile_Click);
             // 
             // saveToolStripMenuItem
             // 
             resources.ApplyResources(this.saveToolStripMenuItem, "saveToolStripMenuItem");
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // closeFileToolStripMenuItem
             // 
             resources.ApplyResources(this.closeFileToolStripMenuItem, "closeFileToolStripMenuItem");
             this.closeFileToolStripMenuItem.Name = "closeFileToolStripMenuItem";
-            this.closeFileToolStripMenuItem.Text = "Close";
             this.closeFileToolStripMenuItem.Click += new System.EventHandler(this.btnClose_Click);
             // 
             // toolsToolStripMenuItem
             // 
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.btnArchiveBuilder,
-            this.btnTrackTool,
-            this.btnOpenObjectCollection,
             this.btnEditorFavouritesTool,
-            this.btnCustomization,
-            this.imageRipperToolStripMenuItem,
-            this.toolStripMenuItem1});
+            this.toolStripMenuItem2,
+            this.mDLToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             resources.ApplyResources(this.toolsToolStripMenuItem, "toolsToolStripMenuItem");
-            this.toolsToolStripMenuItem.Text = "Tools";
-            // 
-            // btnArchiveBuilder
-            // 
-            this.btnArchiveBuilder.Name = "btnArchiveBuilder";
-            resources.ApplyResources(this.btnArchiveBuilder, "btnArchiveBuilder");
-            this.btnArchiveBuilder.Text = "Archive Builder";
-            this.btnArchiveBuilder.Click += new System.EventHandler(this.btnArchiveBuilder_Click);
-            // 
-            // btnTrackTool
-            // 
-            this.btnTrackTool.Name = "btnTrackTool";
-            resources.ApplyResources(this.btnTrackTool, "btnTrackTool");
-            this.btnTrackTool.Text = "Track Tool";
-            this.btnTrackTool.Click += new System.EventHandler(this.btnTrackTool_Click);
-            // 
-            // btnOpenObjectCollection
-            // 
-            this.btnOpenObjectCollection.Name = "btnOpenObjectCollection";
-            resources.ApplyResources(this.btnOpenObjectCollection, "btnOpenObjectCollection");
-            this.btnOpenObjectCollection.Text = "Open Object Collection";
-            this.btnOpenObjectCollection.Click += new System.EventHandler(this.btnOpenObjectCollection_Click);
             // 
             // btnEditorFavouritesTool
             // 
             this.btnEditorFavouritesTool.Name = "btnEditorFavouritesTool";
             resources.ApplyResources(this.btnEditorFavouritesTool, "btnEditorFavouritesTool");
-            this.btnEditorFavouritesTool.Text = "Editor Favourites Tool";
             this.btnEditorFavouritesTool.Click += new System.EventHandler(this.btnEditorFavouritesTool_Click);
             // 
-            // btnCustomization
+            // toolStripMenuItem2
             // 
-            this.btnCustomization.Name = "btnCustomization";
-            resources.ApplyResources(this.btnCustomization, "btnCustomization");
-            this.btnCustomization.Text = "Customization";
-            this.btnCustomization.Click += new System.EventHandler(this.btnCustomization_Click);
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            resources.ApplyResources(this.toolStripMenuItem2, "toolStripMenuItem2");
+            this.toolStripMenuItem2.Click += new System.EventHandler(this.toolStripMenuItem2_Click);
             // 
-            // imageRipperToolStripMenuItem
+            // btnAbout
             // 
-            this.imageRipperToolStripMenuItem.Name = "imageRipperToolStripMenuItem";
-            resources.ApplyResources(this.imageRipperToolStripMenuItem, "imageRipperToolStripMenuItem");
-            this.imageRipperToolStripMenuItem.Click += new System.EventHandler(this.imageRipperToolStripMenuItem_Click);
+            this.btnAbout.Name = "btnAbout";
+            resources.ApplyResources(this.btnAbout, "btnAbout");
+            this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
+            // 
+            // toolStripDropDownButton2
+            // 
+            this.toolStripDropDownButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripDropDownButton2.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripTextBox1,
+            this.toolStripMenuItem1});
+            resources.ApplyResources(this.toolStripDropDownButton2, "toolStripDropDownButton2");
+            this.toolStripDropDownButton2.Name = "toolStripDropDownButton2";
+            // 
+            // toolStripTextBox1
+            // 
+            resources.ApplyResources(this.toolStripTextBox1, "toolStripTextBox1");
+            this.toolStripTextBox1.Name = "toolStripTextBox1";
+            this.toolStripTextBox1.Click += new System.EventHandler(this.toolStripTextBox1_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             resources.ApplyResources(this.toolStripMenuItem1, "toolStripMenuItem1");
             this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
-            // 
-            // btnAbout
-            // 
-            this.btnAbout.Name = "btnAbout";
-            resources.ApplyResources(this.btnAbout, "btnAbout");
-            this.btnAbout.Text = "About";
-            this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
             // 
             // tvDirectoryDisplay
             // 
@@ -186,6 +162,12 @@ namespace FusionExplorer {
             resources.ApplyResources(this.statusStrip2, "statusStrip2");
             this.statusStrip2.Name = "statusStrip2";
             // 
+            // ProgressBar1
+            // 
+            this.ProgressBar1.Name = "ProgressBar1";
+            resources.ApplyResources(this.ProgressBar1, "ProgressBar1");
+            this.ProgressBar1.Step = 1;
+            // 
             // StatusLabel1
             // 
             this.StatusLabel1.Name = "StatusLabel1";
@@ -196,11 +178,10 @@ namespace FusionExplorer {
             this.StatusLabel2.Name = "StatusLabel2";
             resources.ApplyResources(this.StatusLabel2, "StatusLabel2");
             // 
-            // ProgressBar1
+            // mDLToolStripMenuItem
             // 
-            this.ProgressBar1.Name = "ProgressBar1";
-            resources.ApplyResources(this.ProgressBar1, "ProgressBar1");
-            this.ProgressBar1.Step = 1;
+            this.mDLToolStripMenuItem.Name = "mDLToolStripMenuItem";
+            resources.ApplyResources(this.mDLToolStripMenuItem, "mDLToolStripMenuItem");
             // 
             // FusionExplorer
             // 
@@ -231,18 +212,17 @@ namespace FusionExplorer {
         private System.Windows.Forms.ToolStripMenuItem closeFileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem btnArchiveBuilder;
-        private System.Windows.Forms.ToolStripMenuItem btnTrackTool;
-        private System.Windows.Forms.ToolStripMenuItem btnOpenObjectCollection;
         private System.Windows.Forms.ToolStripMenuItem btnEditorFavouritesTool;
         private System.Windows.Forms.ToolStripMenuItem btnAbout;
-        private System.Windows.Forms.ToolStripMenuItem btnCustomization;
-        private System.Windows.Forms.ToolStripMenuItem imageRipperToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private StatusStrip statusStrip2;
         private ToolStripStatusLabel StatusLabel1;
         private ToolStripStatusLabel StatusLabel2;
         private ToolStripProgressBar ProgressBar1;
+        private ToolStripDropDownButton toolStripDropDownButton2;
+        private ToolStripTextBox toolStripTextBox1;
+        private ToolStripMenuItem toolStripMenuItem1;
+        private ToolStripMenuItem toolStripMenuItem2;
+        private ToolStripMenuItem mDLToolStripMenuItem;
     }
 }
 
