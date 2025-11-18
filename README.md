@@ -22,7 +22,7 @@ A specialized tool for exploring, extracting, modifying, and repackaging game fi
 
 ## Supported Games
 
-- Trials Fusion (Besides data_patch.pak)
+- Trials Fusion (excluding data_patch.pak)
 - Trials Evolution: Gold Edition
 
 ## Unsupported Games
